@@ -1,0 +1,693 @@
+
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kontak Resmi Magnum188 Official</title>
+    <link rel="icon" type="image/png"
+        href="https://pengen-tau-ya.vercel.app/magnum188/favicon.ico" />
+
+    <!-- Optional: font modern (boleh hapus kalau mau super ringan) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg: #07070a;
+            --card: rgba(12, 12, 16, .62);
+            --card2: rgba(255, 255, 255, .06);
+            --text: rgba(255, 255, 255, .92);
+            --muted: rgba(255, 255, 255, .70);
+            --muted2: rgba(255, 255, 255, .55);
+            --stroke: rgba(255, 255, 255, .12);
+
+            --brand-red: #ff1d1d;
+            --gold: #f6d365;
+            --gold2: #fda085;
+
+            --radius: 18px;
+            --shadow: 0 18px 60px rgba(0, 0, 0, .55);
+            --shadow2: 0 12px 30px rgba(0, 0, 0, .40);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            height: 100%;
+        }
+
+        /* Background lebih modern: image + gradient overlay */
+        body {
+            margin: 0;
+            font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+            color: var(--text);
+            background-attachment: fixed !important;
+            background-size: cover !important;
+            background:
+                radial-gradient(circle at 15% 10%, rgba(255, 29, 29, .28), transparent 34%),
+                radial-gradient(circle at 85% 20%, rgba(246, 211, 101, .18), transparent 30%),
+                linear-gradient(145deg, #240508 0%, #0b080b 48%, #170407 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px 16px;
+        }
+
+        /* Wrapper */
+        .wrap {
+            width: 100%;
+            max-width: 560px;
+            margin: auto;
+        }
+
+        /* Card glass */
+        .panel {
+            background: linear-gradient(180deg, var(--card), rgba(12, 12, 16, .46));
+            border: 1px solid var(--stroke);
+            border-radius: calc(var(--radius) + 6px);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            position: relative;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        /* Glow accent tipis biar premium */
+        .panel::before {
+            content: "";
+            position: absolute;
+            inset: -2px;
+            background:
+                radial-gradient(600px 200px at 20% 0%, rgba(255, 29, 29, .25), transparent 60%),
+                radial-gradient(500px 220px at 90% 10%, rgba(246, 211, 101, .22), transparent 60%);
+            pointer-events: none;
+            filter: blur(8px);
+            opacity: .85;
+        }
+
+        .panel-inner {
+            position: relative;
+            padding: 22px 18px 18px;
+        }
+
+        /* Header */
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 10px 10px 18px;
+        }
+
+        .logo-wrap {
+            width: 62px;
+            height: 62px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, rgba(255, 29, 29, .25), rgba(246, 211, 101, .10));
+            border: 1px solid rgba(255, 255, 255, .14);
+            box-shadow: var(--shadow2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            flex: 0 0 auto;
+        }
+
+        .logo-wrap img {
+            width: 58px;
+            height: auto;
+            display: block;
+            filter: drop-shadow(0 10px 18px rgba(0, 0, 0, .45));
+        }
+
+        .brand-text h1 {
+            font-size: 16px;
+            line-height: 1.2;
+            margin: 0;
+            font-weight: 700;
+            letter-spacing: .2px;
+        }
+
+        .brand-text p {
+            margin: 6px 0 0;
+            font-size: 12.5px;
+            color: var(--muted);
+            line-height: 1.35;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 10px;
+            padding: 7px 10px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, .14);
+            background: rgba(255, 255, 255, .06);
+            color: var(--muted);
+            font-size: 12px;
+            user-select: none;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 999px;
+            background: rgba(0, 255, 163, .8);
+            box-shadow: 0 0 0 6px rgba(0, 255, 163, .08);
+        }
+
+        .dot.updating {
+            background: rgba(246, 211, 101, .95);
+            box-shadow: 0 0 0 6px rgba(246, 211, 101, .12);
+            animation: pulse 1.2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: .95;
+            }
+
+            50% {
+                transform: scale(1.18);
+                opacity: .75;
+            }
+        }
+
+        /* Links grid */
+        .links {
+            margin-top: 6px;
+            display: grid;
+            gap: 12px;
+            padding: 10px;
+        }
+
+        .link {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 14px 14px;
+            border-radius: var(--radius);
+            border: 1px solid rgba(255, 255, 255, .12);
+            background:
+                linear-gradient(180deg, rgba(255, 255, 255, .07), rgba(255, 255, 255, .04));
+            box-shadow: 0 12px 26px rgba(0, 0, 0, .28);
+            text-decoration: none;
+            color: var(--text);
+            transition: transform .18s ease, border-color .18s ease, background .18s ease, box-shadow .18s ease;
+            position: relative;
+            outline: none;
+        }
+
+        .link:hover {
+            transform: translateY(-2px);
+            border-color: rgba(255, 255, 255, .22);
+            background:
+                linear-gradient(180deg, rgba(255, 255, 255, .09), rgba(255, 255, 255, .05));
+            box-shadow: 0 14px 32px rgba(0, 0, 0, .33);
+        }
+
+        .link:active {
+            transform: translateY(0px);
+        }
+
+        /* Focus ring untuk keyboard / aksesibilitas */
+        .link:focus-visible {
+            box-shadow: 0 0 0 4px rgba(255, 29, 29, .25), 0 0 0 1px rgba(246, 211, 101, .35) inset, 0 14px 32px rgba(0, 0, 0, .33);
+            border-color: rgba(246, 211, 101, .38);
+        }
+
+        .link-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 0;
+        }
+
+        .icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, .06);
+            border: 1px solid rgba(255, 255, 255, .12);
+            flex: 0 0 auto;
+        }
+
+        .icon img {
+            width: 18px;
+            height: 18px;
+            display: block;
+            filter: drop-shadow(0 8px 10px rgba(0, 0, 0, .30));
+        }
+
+        .label {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+
+        .label strong {
+            font-size: 12px;
+            letter-spacing: .2px;
+            text-transform: uppercase;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .label span {
+            margin-top: 3px;
+            font-size: 11px;
+            color: var(--muted2);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .chev {
+            width: 34px;
+            height: 34px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, rgba(255, 29, 29, .22), rgba(246, 211, 101, .12));
+            border: 1px solid rgba(255, 255, 255, .12);
+            flex: 0 0 auto;
+        }
+
+        .chev svg {
+            width: 16px;
+            height: 16px;
+            opacity: .9;
+        }
+
+
+
+        .link.is-disabled {
+            opacity: .45;
+            cursor: not-allowed;
+            filter: grayscale(.75);
+            border-style: dashed;
+            background: linear-gradient(180deg, rgba(255, 255, 255, .035), rgba(255, 255, 255, .02));
+        }
+
+        .link.is-disabled:hover {
+            transform: none;
+            border-color: rgba(255, 255, 255, .12);
+            box-shadow: 0 12px 26px rgba(0, 0, 0, .22);
+        }
+
+        .link.is-disabled .label span {
+            color: rgba(255, 128, 128, .95);
+        }
+
+        .link.is-disabled .chev {
+            background: rgba(255, 255, 255, .035);
+        }
+
+        /* Footer */
+        .footer {
+            padding: 14px 18px 18px;
+            border-top: 1px solid rgba(255, 255, 255, .10);
+            background: rgba(255, 255, 255, .03);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .footer small {
+            color: var(--muted2);
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        .mini {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .pill {
+            padding: 7px 10px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, .14);
+            background: rgba(255, 255, 255, .05);
+            color: var(--muted);
+            font-size: 12px;
+            user-select: none;
+        }
+
+        /* Mobile tweaks */
+        @media (max-width: 800px) {
+            body {
+                background:
+                    radial-gradient(circle at 50% 0%, rgba(255, 29, 29, .30), transparent 34%),
+                    linear-gradient(165deg, #240508 0%, #09080a 58%, #170407 100%) !important;
+            }
+        }
+
+        .icon-letter {
+            color: var(--gold);
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: .04em;
+        }
+
+        @media (max-width: 420px) {
+            .brand-text h1 {
+                font-size: 15px;
+            }
+
+            .logo-wrap {
+                width: 56px;
+                height: 56px;
+                border-radius: 15px;
+            }
+
+            .logo-wrap img {
+                width: 52px;
+            }
+
+            .link {
+                padding: 13px 13px;
+            }
+
+            .icon {
+                width: 38px;
+                height: 38px;
+            }
+
+            .chev {
+                width: 32px;
+                height: 32px;
+            }
+
+            .badge,
+            .pill {
+                font-size: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrap">
+        <div class="panel" role="region" aria-label="Customer Services MAGNUM188">
+            <div class="panel-inner">
+                <header class="brand">
+                    <div class="logo-wrap" aria-hidden="true">
+                        <img src="https://pengen-tau-ya.vercel.app/magnum188/favicon.ico"
+                            alt="MAGNUM188" />
+                    </div>
+                    <div class="brand-text">
+                        <h1>Customer Services MAGNUM188</h1>
+                        <div class="badge" id="statusBadge" aria-live="polite">
+                            <span class="dot" id="statusDot"></span>
+                            <span id="statusText">Online • Layanan siap digunakan</span>
+                        </div>
+                    </div>
+                </header>
+
+                <main class="links">
+                    <a id="whatsappLink" class="link" href="#" target="_blank" rel="noopener noreferrer">
+                        <div class="link-left">
+                            <div class="icon" aria-hidden="true"><span class="icon-letter">WA</span></div>
+                            <div class="label">
+                                <strong>WhatsApp Official</strong>
+                                <span>Respon cepat & bantuan akun</span>
+                            </div>
+                        </div>
+                        <div class="chev" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none">
+                                <path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" />
+                            </svg>
+                        </div>
+                    </a>
+
+                    <a id="telegramLink" class="link" href="#" target="_blank" rel="noopener noreferrer">
+                        <div class="link-left">
+                            <div class="icon" aria-hidden="true"><span class="icon-letter">TG</span></div>
+                            <div class="label">
+                                <strong>Telegram Official</strong>
+                                <span>Update info & bantuan via chat</span>
+                            </div>
+                        </div>
+                        <div class="chev" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none">
+                                <path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" />
+                            </svg>
+                        </div>
+                    </a>
+
+                    <a id="livechatLink" class="link" href="#" target="_blank" rel="noopener noreferrer">
+                        <div class="link-left">
+                            <div class="icon" aria-hidden="true"><span class="icon-letter">LC</span></div>
+                            <div class="label">
+                                <strong>LiveChat Official</strong>
+                                <span>Bantuan langsung melalui live chat</span>
+                            </div>
+                        </div>
+                        <div class="chev" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none">
+                                <path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" />
+                            </svg>
+                        </div>
+                    </a>
+
+                    <a id="whatsappGroupLink" class="link" href="#" target="_blank" rel="noopener noreferrer">
+                        <div class="link-left">
+                            <div class="icon" aria-hidden="true"><span class="icon-letter">WG</span></div>
+                            <div class="label">
+                                <strong>Grup WhatsApp Official</strong>
+                                <span>Bergabung ke komunitas WhatsApp</span>
+                            </div>
+                        </div>
+                        <div class="chev" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none">
+                                <path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" />
+                            </svg>
+                        </div>
+                    </a>
+
+                    <a id="telegramGroupLink" class="link" href="#" target="_blank" rel="noopener noreferrer">
+                        <div class="link-left">
+                            <div class="icon" aria-hidden="true"><span class="icon-letter">TG</span></div>
+                            <div class="label">
+                                <strong>Grup Telegram Official</strong>
+                                <span>Bergabung ke komunitas Telegram</span>
+                            </div>
+                        </div>
+                        <div class="chev" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none">
+                                <path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" />
+                            </svg>
+                        </div>
+                    </a>
+
+                    <a id="facebookGroupLink" class="link" href="#" target="_blank" rel="noopener noreferrer">
+                        <div class="link-left">
+                            <div class="icon" aria-hidden="true"><span class="icon-letter">FB</span></div>
+                            <div class="label">
+                                <strong>Grup Facebook Official</strong>
+                                <span>Bergabung ke komunitas Facebook</span>
+                            </div>
+                        </div>
+                        <div class="chev" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none">
+                                <path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" />
+                            </svg>
+                        </div>
+                    </a>
+                </main>
+            </div>
+
+            <div class="footer">
+                <small>
+                    Pastikan menghubungi layanan official. Jika layanan nonaktif atau data panel kosong, tombol otomatis
+                    disable dan tidak bisa diklik.
+                </small>
+                <div class="mini">
+                    <span class="pill" id="intervalPill">Mode: Static</span>
+                    <span class="pill">MAGNUM188 • Support</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        var fetchInterval;
+
+        var services = {
+            whatsapp: {
+                selector: '#whatsappLink',
+                readyText: 'Respon cepat & bantuan akun',
+                disabledText: 'WhatsApp Official sedang tidak tersedia.'
+            },
+            telegram: {
+                selector: '#telegramLink',
+                readyText: 'Update info & bantuan via chat',
+                disabledText: 'Telegram Official sedang tidak tersedia.'
+            },
+            livechat: {
+                selector: '#livechatLink',
+                readyText: 'Bantuan langsung melalui live chat',
+                disabledText: 'LiveChat Official sedang tidak tersedia.'
+            },
+            whatsapp_group: {
+                selector: '#whatsappGroupLink',
+                readyText: 'Bergabung ke komunitas WhatsApp',
+                disabledText: 'Grup WhatsApp sedang tidak tersedia.'
+            },
+            telegram_group: {
+                selector: '#telegramGroupLink',
+                readyText: 'Bergabung ke komunitas Telegram',
+                disabledText: 'Grup Telegram sedang tidak tersedia.'
+            },
+            facebook_group: {
+                selector: '#facebookGroupLink',
+                readyText: 'Bergabung ke komunitas Facebook',
+                disabledText: 'Grup Facebook sedang tidak tersedia.'
+            }
+        };
+
+        function setStatus(state, text) {
+            var dot = document.getElementById('statusDot');
+            var label = document.getElementById('statusText');
+            if (!dot || !label) return;
+
+            dot.classList.toggle('updating', state === 'updating');
+            label.textContent = text || (state === 'updating' ? 'Updating • Sedang memperbarui link' : 'Online • Layanan siap digunakan');
+        }
+
+        function setIntervalPill(ms) {
+            var pill = document.getElementById('intervalPill');
+            if (!pill) return;
+            if (!ms) { pill.textContent = 'Auto refresh: —'; return; }
+            pill.textContent = 'Auto refresh: ' + (ms / 1000) + 's';
+        }
+
+        function disableService(key) {
+            var cfg = services[key];
+            if (!cfg) return;
+            var link = document.querySelector(cfg.selector);
+            if (!link) return;
+            link.removeAttribute('href');
+            link.classList.add('is-disabled');
+            link.setAttribute('aria-disabled', 'true');
+            link.setAttribute('title', cfg.disabledText);
+            link.dataset.disabledMessage = cfg.disabledText;
+            var description = link.querySelector('.label span');
+            if (description) description.textContent = 'Sedang tidak tersedia / belum tersedia';
+        }
+
+        function enableService(key, value) {
+            var cfg = services[key];
+            if (!cfg) return false;
+            value = (value || '').toString().trim();
+            if (!value) { disableService(key); return false; }
+
+            var url = String(value).trim();
+            if (!url || url.indexOf('/go/') !== 0) {
+                disableService(key);
+                return false;
+            }
+
+            var link = document.querySelector(cfg.selector);
+            if (!link) return false;
+            link.href = url;
+            link.classList.remove('is-disabled');
+            link.removeAttribute('aria-disabled');
+            link.removeAttribute('title');
+            delete link.dataset.disabledMessage;
+            var description = link.querySelector('.label span');
+            if (description) description.textContent = cfg.readyText;
+            return true;
+        }
+
+        function applyServices(data) {
+            var total = Object.keys(services).length;
+            var active = 0;
+
+            Object.keys(services).forEach(function (key) {
+                if (enableService(key, data ? data[key] : null)) active++;
+            });
+
+            if (active === total) {
+                setStatus('ready', 'Online • Semua layanan siap digunakan');
+            } else if (active > 0) {
+                setStatus('ready', 'Online • Sebagian layanan belum tersedia');
+            } else {
+                setStatus('ready', 'Offline • Semua layanan belum tersedia');
+            }
+        }
+
+        async function getDurasi() {
+            try {
+                var response = await fetch('/api/duration', { cache: 'no-store' });
+                if (!response.ok) throw new Error('Gagal membaca durasi');
+                var data = await response.json();
+                if (data.durasi) {
+                    clearInterval(fetchInterval);
+                    fetchInterval = setInterval(fetchContacts, data.durasi);
+                    setIntervalPill(data.durasi);
+                }
+            } catch (error) {
+                setIntervalPill(null);
+            }
+        }
+
+        async function fetchContacts() {
+            setStatus('updating', 'Updating • Sedang memperbarui link');
+            try {
+                var response = await fetch('/api/contacts', { cache: 'no-store' });
+                if (!response.ok) throw new Error('Gagal membaca kontak');
+                applyServices(await response.json());
+            } catch (error) {
+                applyServices(null);
+                setStatus('ready', 'Offline • Gagal membaca layanan');
+            }
+        }
+
+        document.addEventListener('click', function (event) {
+            var link = event.target.closest('.link.is-disabled');
+            if (!link) return;
+            event.preventDefault();
+            alert(link.dataset.disabledMessage || 'Layanan sedang tidak tersedia atau belum tersedia.');
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            applyServices(null);
+            getDurasi();
+            fetchContacts();
+        });
+    </script>
+
+    <script defer
+        src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015"
+        integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ=="
+        data-cf-beacon='{"version":"2024.11.0","token":"3a4c0164ecd94179b0f802292499dfa0","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}'
+        crossorigin="anonymous"></script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"3a4c0164ecd94179b0f802292499dfa0","r":1}' crossorigin="anonymous"></script>
+</body>
+
+</html>
