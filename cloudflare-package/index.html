@@ -252,6 +252,38 @@
             filter: drop-shadow(0 8px 10px rgba(0, 0, 0, .30));
         }
 
+        .icon svg {
+            width: 23px;
+            height: 23px;
+            display: block;
+            color: #fff;
+            filter: drop-shadow(0 5px 8px rgba(0, 0, 0, .28));
+        }
+
+        .icon-whatsapp {
+            background: linear-gradient(145deg, #2ee66b, #13a94a);
+            border-color: rgba(115, 255, 166, .48);
+            box-shadow: 0 8px 22px rgba(37, 211, 102, .22);
+        }
+
+        .icon-telegram {
+            background: linear-gradient(145deg, #3eb9f2, #168bd2);
+            border-color: rgba(124, 211, 255, .48);
+            box-shadow: 0 8px 22px rgba(34, 158, 217, .22);
+        }
+
+        .icon-livechat {
+            background: linear-gradient(145deg, #ff5050, #d91f35);
+            border-color: rgba(255, 135, 135, .48);
+            box-shadow: 0 8px 22px rgba(235, 38, 62, .22);
+        }
+
+        .icon-facebook {
+            background: linear-gradient(145deg, #4285f4, #1761c9);
+            border-color: rgba(133, 183, 255, .48);
+            box-shadow: 0 8px 22px rgba(24, 119, 242, .22);
+        }
+
         .label {
             display: flex;
             flex-direction: column;
@@ -361,13 +393,6 @@
             }
         }
 
-        .icon-letter {
-            color: var(--gold);
-            font-size: 11px;
-            font-weight: 800;
-            letter-spacing: .04em;
-        }
-
         @media (max-width: 420px) {
             .brand-text h1 {
                 font-size: 15px;
@@ -426,7 +451,12 @@
                 <main class="links">
                     <a id="whatsappLink" class="link" href="#" target="_blank" rel="noopener noreferrer">
                         <div class="link-left">
-                            <div class="icon" aria-hidden="true"><span class="icon-letter">WA</span></div>
+                            <div class="icon icon-whatsapp" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none">
+                                    <path d="M20 11.6a8 8 0 0 1-11.8 7L4 20l1.4-4A8 8 0 1 1 20 11.6Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M8.2 7.8c.4-.4.8-.2 1 .2l.8 1.7c.1.3.1.6-.2.8l-.6.6c.5 1.3 1.6 2.4 2.9 2.9l.7-.7c.2-.2.5-.3.8-.1l1.7.8c.4.2.5.6.3 1-.4.8-1.2 1.3-2.1 1.2-3.1-.4-5.8-3.1-6.2-6.2-.1-.9.3-1.7.9-2.2Z" fill="currentColor"/>
+                                </svg>
+                            </div>
                             <div class="label">
                                 <strong>WhatsApp Official</strong>
                                 <span>Respon cepat & bantuan akun</span>
@@ -442,7 +472,11 @@
 
                     <a id="telegramLink" class="link" href="#" target="_blank" rel="noopener noreferrer">
                         <div class="link-left">
-                            <div class="icon" aria-hidden="true"><span class="icon-letter">TG</span></div>
+                            <div class="icon icon-telegram" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none">
+                                    <path d="M20.5 4.5 17.7 19c-.2 1-1 1.2-1.8.7l-4.3-3.2-2.1 2c-.2.2-.4.4-.9.4l.3-4.4 8-7.2c.4-.3-.1-.5-.5-.2l-9.9 6.2-4.2-1.3c-.9-.3-.9-.9.2-1.3l16.4-6.3c.8-.3 1.5.2 1.2 1.3Z" fill="currentColor"/>
+                                </svg>
+                            </div>
                             <div class="label">
                                 <strong>Telegram Official</strong>
                                 <span>Update info & bantuan via chat</span>
@@ -458,7 +492,12 @@
 
                     <a id="livechatLink" class="link" href="#" target="_blank" rel="noopener noreferrer">
                         <div class="link-left">
-                            <div class="icon" aria-hidden="true"><span class="icon-letter">LC</span></div>
+                            <div class="icon icon-livechat" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none">
+                                    <path d="M20 12a7 7 0 0 1-7 7H8l-4 2 1.3-4A7.5 7.5 0 1 1 20 12Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <circle cx="9" cy="12" r="1" fill="currentColor"/><circle cx="13" cy="12" r="1" fill="currentColor"/><circle cx="17" cy="12" r="1" fill="currentColor"/>
+                                </svg>
+                            </div>
                             <div class="label">
                                 <strong>LiveChat Official</strong>
                                 <span>Bantuan langsung melalui live chat</span>
@@ -474,7 +513,13 @@
 
                     <a id="whatsappGroupLink" class="link" href="#" target="_blank" rel="noopener noreferrer">
                         <div class="link-left">
-                            <div class="icon" aria-hidden="true"><span class="icon-letter">WG</span></div>
+                            <div class="icon icon-whatsapp" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none">
+                                    <circle cx="9" cy="9" r="2.5" stroke="currentColor" stroke-width="1.7"/>
+                                    <circle cx="16.5" cy="10" r="2" stroke="currentColor" stroke-width="1.7"/>
+                                    <path d="M4.5 18c.4-3 2-4.5 4.5-4.5s4.1 1.5 4.5 4.5M14 14.5c2.8-.8 5 .6 5.5 3.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+                                </svg>
+                            </div>
                             <div class="label">
                                 <strong>Grup WhatsApp Official</strong>
                                 <span>Bergabung ke komunitas WhatsApp</span>
@@ -490,7 +535,14 @@
 
                     <a id="telegramGroupLink" class="link" href="#" target="_blank" rel="noopener noreferrer">
                         <div class="link-left">
-                            <div class="icon" aria-hidden="true"><span class="icon-letter">TG</span></div>
+                            <div class="icon icon-telegram" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none">
+                                    <circle cx="8" cy="9" r="2.3" stroke="currentColor" stroke-width="1.6"/>
+                                    <circle cx="15" cy="10" r="1.8" stroke="currentColor" stroke-width="1.6"/>
+                                    <path d="M3.8 18c.4-2.8 1.9-4.2 4.2-4.2s3.8 1.4 4.2 4.2M13.2 14.5c2.6-.7 4.6.6 5 3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+                                    <path d="m18.2 5.2 2.1-1-1 2.1-.2 1.4-.9-.9-1.4-.2 1.4-1.4Z" fill="currentColor"/>
+                                </svg>
+                            </div>
                             <div class="label">
                                 <strong>Grup Telegram Official</strong>
                                 <span>Bergabung ke komunitas Telegram</span>
@@ -506,7 +558,14 @@
 
                     <a id="facebookGroupLink" class="link" href="#" target="_blank" rel="noopener noreferrer">
                         <div class="link-left">
-                            <div class="icon" aria-hidden="true"><span class="icon-letter">FB</span></div>
+                            <div class="icon icon-facebook" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none">
+                                    <circle cx="8" cy="9" r="2.3" stroke="currentColor" stroke-width="1.6"/>
+                                    <circle cx="15" cy="10" r="1.8" stroke="currentColor" stroke-width="1.6"/>
+                                    <path d="M3.8 18c.4-2.8 1.9-4.2 4.2-4.2s3.8 1.4 4.2 4.2M13.2 14.5c2.6-.7 4.6.6 5 3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+                                    <path d="M20 4.5h-1.1c-1 0-1.7.7-1.7 1.8V8h-1.3v2h1.3v4h2.2v-4h1.4l.3-2h-1.7V6.7c0-.3.2-.5.6-.5h1V4.5Z" fill="currentColor"/>
+                                </svg>
+                            </div>
                             <div class="label">
                                 <strong>Grup Facebook Official</strong>
                                 <span>Bergabung ke komunitas Facebook</span>
