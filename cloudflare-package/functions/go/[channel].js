@@ -1,5 +1,10 @@
 const CHANNEL_HOSTS = {
-  whatsapp: new Set(["api.whatsapp.com", "wa.me"]),
+  whatsapp: new Set([
+  "api.whatsapp.com",
+  "wa.me",
+  "pasticuan.me",
+  "www.pasticuan.me"
+]),
   telegram: new Set(["t.me", "telegram.me"]),
   livechat: new Set(["direct.lc.chat"]),
   whatsapp_group: new Set(["chat.whatsapp.com"]),
