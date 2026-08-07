@@ -21,13 +21,18 @@ export async function onRequestGet(context) {
     );
   }
 
-  const values = await Promise.all(
-    CHANNELS.map((channel) => context.env.CONTACTS.get(channel)),
-  );
+  const [values, statuses] = await Promise.all([
+    Promise.all(CHANNELS.map((channel) => context.env.CONTACTS.get(channel))),
+    Promise.all(
+      CHANNELS.map((channel) => context.env.CONTACTS.get(`status:${channel}`)),
+    ),
+  ]);
 
   const contacts = {};
   CHANNELS.forEach((channel, index) => {
-    contacts[channel] = values[index] ? `/go/${channel}` : "";
+    // Status lama yang belum memiliki key dianggap aktif agar tetap kompatibel.
+    const isActive = statuses[index] !== "inactive";
+    contacts[channel] = values[index] && isActive ? `/go/${channel}` : "";
   });
 
   return new Response(JSON.stringify(contacts), {

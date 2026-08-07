@@ -1,66 +1,108 @@
-# Kontak Resmi MAGNUM188 — Cloudflare Pages
+# MAGNUM188 — Kontak Resmi + Panel Admin
 
-Paket ini mempertahankan template kontak MAGNUM188 dan menggunakan Cloudflare
-Pages Functions + KV. Nilai kontak asli tidak berada di `index.html` atau kode
-GitHub. Browser hanya menerima alamat perantara `/go/...`.
+Paket ini menggunakan Cloudflare Pages Functions dan KV. Link asli tidak
+ditulis di `index.html`. Admin dapat mengganti link serta status kontak melalui
+halaman `/admin/` tanpa membuka menu KV secara manual.
 
 ## Isi paket
 
-- `index.html`: template utama.
-- `functions/api/contacts.js`: membaca status keenam kontak dari KV.
-- `functions/api/duration.js`: interval pembaruan 30 detik.
-- `functions/go/[channel].js`: redirect aman menuju kontak yang dipilih.
-- `_headers`: header keamanan dan larangan cache untuk endpoint dinamis.
+- `index.html`: halaman kontak publik dengan enam ikon SVG.
+- `admin/index.html`: panel admin untuk edit link dan status.
+- `functions/api/admin.js`: login, logout, baca, dan simpan konfigurasi.
+- `functions/api/contacts.js`: memberikan alias kontak aktif kepada halaman publik.
+- `functions/api/duration.js`: interval pembaruan kontak 30 detik.
+- `functions/go/[channel].js`: redirect aman berdasarkan daftar domain yang diizinkan.
+- `_headers`: aturan no-cache, noindex, dan keamanan halaman admin.
 
-## 1. Upload ke GitHub
+## Struktur GitHub
 
-Ekstrak ZIP. Upload seluruh isi folder ini ke root repository GitHub. Struktur
-folder `functions` dan nama file `[channel].js` jangan diubah.
+Jika Cloudflare Root directory Anda adalah `cloudflare-package`, upload isi
+paket dengan struktur berikut:
 
-## 2. Hubungkan Cloudflare Pages
+```text
+repository/
+└── cloudflare-package/
+    ├── index.html
+    ├── _headers
+    ├── admin/
+    │   └── index.html
+    └── functions/
+        ├── api/
+        │   ├── admin.js
+        │   ├── contacts.js
+        │   └── duration.js
+        └── go/
+            └── [channel].js
+```
 
-Di Cloudflare buka Workers & Pages, buat Pages project, lalu hubungkan repository
-GitHub. Gunakan production branch `main`, framework preset `None`, build command
-`exit 0`, dan output directory `.`.
+Nama `[channel].js` termasuk tanda kurung siku dan tidak boleh diubah.
 
-## 3. Buat KV
+## Konfigurasi Cloudflare Pages
 
-Di Cloudflare buka Storage & Databases > KV lalu buat namespace, misalnya
-`magnum188-contacts`.
+Gunakan pengaturan build berikut:
 
-Pada Pages project buka Settings > Bindings > Add > KV namespace:
-
-- Variable name: `CONTACTS`
-- KV namespace: pilih `magnum188-contacts`
-
-Simpan lalu lakukan deployment baru agar binding aktif.
-
-## 4. Tambahkan data KV
-
-Masukkan enam key berikut. Salin value masing-masing dari daftar kontak pribadi
-Anda; jangan tulis value tersebut ke repository publik.
-
-| Key | Jenis data |
+| Pengaturan | Nilai |
 | --- | --- |
-| `whatsapp` | Link WhatsApp admin |
-| `telegram` | Link Telegram admin |
-| `livechat` | Link LiveChat |
-| `whatsapp_group` | Link undangan grup WhatsApp |
-| `telegram_group` | Link grup Telegram |
-| `facebook_group` | Link grup Facebook |
+| Framework preset | `None` |
+| Build command | `exit 0` |
+| Build output directory | `.` |
+| Root directory | `cloudflare-package` |
 
-Jika satu key dihapus atau value dikosongkan, tombol terkait otomatis menjadi
-nonaktif.
+Binding KV pada project Pages:
 
-## 5. Uji
+| Variable name | Namespace |
+| --- | --- |
+| `CONTACTS` | `magnum188-contacts` |
 
-- Buka `/api/duration`; hasilnya harus berisi `{"durasi":30000}`.
-- Buka `/api/contacts`; hasilnya hanya boleh berisi alamat `/go/...`, bukan
-  nomor/link asli.
-- Klik keenam tombol dan pastikan redirect menuju kanal yang benar.
+Tambahkan dua variable bertipe **Secret** untuk environment Production:
+
+| Secret | Ketentuan |
+| --- | --- |
+| `ADMIN_PASSWORD` | Password panel, minimal 10 karakter; dianjurkan 16+ karakter |
+| `SESSION_SECRET` | Teks acak minimal 32 karakter; dianjurkan 64+ karakter |
+
+Jangan menulis kedua secret tersebut di GitHub atau `index.html`. Setelah
+menambahkan binding/secret, lakukan deployment baru.
+
+## Menggunakan panel
+
+1. Buka `https://livemagnum188.chat/admin/`.
+2. Login menggunakan nilai `ADMIN_PASSWORD`.
+3. Ganti link atau ubah tombol Aktif/Nonaktif.
+4. Gunakan tombol Tes untuk memeriksa link.
+5. Klik Simpan Perubahan.
+
+Panel menyimpan link ke key lama (`whatsapp`, `telegram`, dan seterusnya) serta
+status ke key `status:<channel>`. Jika status lama belum ada, sistem menganggap
+kontak tersebut aktif sehingga tetap kompatibel dengan data KV yang sekarang.
+
+## Domain tujuan yang diizinkan
+
+- WhatsApp: `wa.me`, `api.whatsapp.com`, `pasticuan.me`.
+- Telegram: `t.me`, `telegram.me`, `pasticuan.me`.
+- LiveChat: `direct.lc.chat`, `pasticuan.me`.
+- Grup WhatsApp: `chat.whatsapp.com`, `pasticuan.me`.
+- Grup Telegram: `t.me`, `telegram.me`, `pasticuan.me`.
+- Grup Facebook: `facebook.com`, `www.facebook.com`, `pasticuan.me`.
+
+Hanya protokol HTTPS yang diterima. Daftar ini mencegah panel digunakan sebagai
+open redirect menuju domain sembarangan.
+
+## Pengujian
+
+- `/admin/` harus menampilkan login.
+- Password salah lima kali akan diblokir selama 15 menit untuk alamat IP itu.
+- `/api/contacts` hanya menampilkan `/go/...`, bukan link asli.
+- Kontak nonaktif harus menghilang/nonaktif pada halaman publik.
+- `/go/<channel>` untuk kontak nonaktif harus menghasilkan pesan penolakan.
+- Sesi admin berakhir otomatis setelah 8 jam.
 
 ## Catatan keamanan
 
-Kontak tidak tertulis di HTML atau GitHub. Pengunjung yang benar-benar menekan
-tombol tetap akan diarahkan ke URL tujuan, sehingga tujuan akhirnya dapat
-diketahui setelah redirect. Ini memang diperlukan agar layanan dapat dibuka.
+- Cookie sesi ditandatangani HMAC dan memakai `HttpOnly`, `Secure`, dan
+  `SameSite=Strict`.
+- Request perubahan hanya diterima dari origin website yang sama.
+- Halaman admin diberi `noindex` dan tidak dihubungkan dari halaman publik.
+- Tidak ada sistem yang dapat menyembunyikan URL tujuan setelah pengguna benar-
+  benar mengikuti redirect; penyembunyian hanya mencegah URL mentah tertulis di
+  source halaman publik.

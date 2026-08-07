@@ -1,15 +1,10 @@
 const CHANNEL_HOSTS = {
-  whatsapp: new Set([
-  "api.whatsapp.com",
-  "wa.me",
-  "pasticuan.me",
-  "www.pasticuan.me"
-]),
-  telegram: new Set(["t.me", "telegram.me"]),
-  livechat: new Set(["direct.lc.chat"]),
-  whatsapp_group: new Set(["chat.whatsapp.com"]),
-  telegram_group: new Set(["t.me", "telegram.me"]),
-  facebook_group: new Set(["facebook.com", "www.facebook.com"]),
+  whatsapp: new Set(["api.whatsapp.com", "wa.me", "pasticuan.me", "www.pasticuan.me"]),
+  telegram: new Set(["t.me", "telegram.me", "pasticuan.me", "www.pasticuan.me"]),
+  livechat: new Set(["direct.lc.chat", "pasticuan.me", "www.pasticuan.me"]),
+  whatsapp_group: new Set(["chat.whatsapp.com", "pasticuan.me", "www.pasticuan.me"]),
+  telegram_group: new Set(["t.me", "telegram.me", "pasticuan.me", "www.pasticuan.me"]),
+  facebook_group: new Set(["facebook.com", "www.facebook.com", "pasticuan.me", "www.pasticuan.me"]),
 };
 
 function errorResponse(message, status) {
@@ -39,6 +34,11 @@ export async function onRequestGet(context) {
   const target = String((await context.env.CONTACTS.get(channel)) || "").trim();
   if (!target) {
     return errorResponse("Kontak sedang tidak tersedia.", 404);
+  }
+
+  const status = await context.env.CONTACTS.get(`status:${channel}`);
+  if (status === "inactive") {
+    return errorResponse("Kontak sedang dinonaktifkan.", 404);
   }
 
   let url;
