@@ -6,7 +6,8 @@ halaman `/admin/` tanpa membuka menu KV secara manual.
 
 ## Isi paket
 
-- `index.html`: halaman kontak publik dengan enam ikon SVG.
+- `index.html`: halaman kontak publik premium dengan efek kilau, warna platform,
+  enam ikon SVG, dan badge khusus untuk tombol grup.
 - `admin/index.html`: panel admin untuk edit link dan status.
 - `functions/api/admin.js`: login, logout, baca, dan simpan konfigurasi.
 - `functions/api/contacts.js`: memberikan alias kontak aktif kepada halaman publik.
