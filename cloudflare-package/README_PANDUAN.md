@@ -8,6 +8,8 @@ halaman `/admin/` tanpa membuka menu KV secara manual.
 
 - `index.html`: halaman kontak publik premium dengan efek kilau, warna platform,
   enam ikon SVG, dan badge khusus untuk tombol grup.
+- `groupm188/index.html`: halaman khusus pencarian grup resmi WhatsApp,
+  Telegram, dan Facebook yang dapat dibuka melalui `/groupm188/`.
 - `admin/index.html`: panel admin untuk edit link dan status.
 - `functions/api/admin.js`: login, logout, baca, dan simpan konfigurasi.
 - `functions/api/contacts.js`: memberikan alias kontak aktif kepada halaman publik.
@@ -25,6 +27,8 @@ repository/
 └── cloudflare-package/
     ├── index.html
     ├── _headers
+    ├── groupm188/
+    │   └── index.html
     ├── admin/
     │   └── index.html
     └── functions/
@@ -72,6 +76,11 @@ menambahkan binding/secret, lakukan deployment baru.
 3. Ganti link atau ubah tombol Aktif/Nonaktif.
 4. Gunakan tombol Tes untuk memeriksa link.
 5. Klik Simpan Perubahan.
+
+Perubahan untuk `Grup WhatsApp`, `Grup Telegram`, dan `Grup Facebook` juga
+otomatis digunakan oleh halaman `https://livemagnum188.chat/groupm188/`.
+Tidak diperlukan binding KV atau panel admin tambahan. Halaman memeriksa
+pembaruan secara berkala; tombol grup yang dinonaktifkan tidak dapat dibuka.
 
 Panel menyimpan link ke key lama (`whatsapp`, `telegram`, dan seterusnya) serta
 status ke key `status:<channel>`. Jika status lama belum ada, sistem menganggap

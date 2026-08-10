@@ -1,0 +1,630 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Temukan dan bergabung ke komunitas resmi MAGNUM188 melalui WhatsApp, Telegram, dan Facebook.">
+  <title>Grup Resmi MAGNUM188</title>
+  <link rel="icon" type="image/png" href="https://pengen-tau-ya.vercel.app/magnum188/favicon.ico">
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #080709;
+      --text: #fffaf5;
+      --muted: rgba(255,255,255,.62);
+      --gold: #f6d365;
+      --red: #ff293d;
+      --green: #25d366;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body { min-height: 100%; }
+
+    body {
+      margin: 0;
+      min-width: 320px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+      overflow-x: hidden;
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at 12% 8%, rgba(255, 38, 54, .33), transparent 31%),
+        radial-gradient(circle at 88% 14%, rgba(255, 215, 91, .19), transparent 29%),
+        radial-gradient(circle at 50% 108%, rgba(116, 0, 20, .36), transparent 43%),
+        linear-gradient(145deg, #210307 0%, #08070a 48%, #160306 100%);
+      position: relative;
+      isolation: isolate;
+    }
+
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      z-index: -1;
+      width: 350px;
+      height: 350px;
+      border-radius: 50%;
+      pointer-events: none;
+      filter: blur(90px);
+      opacity: .16;
+      animation: ambient 11s ease-in-out infinite alternate;
+    }
+
+    body::before { top: -140px; left: -120px; background: #ff2038; }
+    body::after { right: -150px; bottom: -150px; background: #f7ce55; animation-delay: -5s; }
+
+    @keyframes ambient { to { transform: translate3d(35px, 28px, 0) scale(1.12); } }
+
+    .shell { width: min(100%, 590px); }
+
+    .panel {
+      position: relative;
+      isolation: isolate;
+      overflow: hidden;
+      border: 1px solid rgba(255, 223, 112, .28);
+      border-radius: 26px;
+      background: linear-gradient(155deg, rgba(38, 13, 17, .92), rgba(10, 9, 12, .96) 48%, rgba(29, 7, 12, .93));
+      box-shadow: 0 32px 90px rgba(0,0,0,.62), 0 0 0 1px rgba(255,255,255,.035) inset, 0 0 52px rgba(220,18,41,.13);
+      backdrop-filter: blur(18px) saturate(125%);
+      -webkit-backdrop-filter: blur(18px) saturate(125%);
+    }
+
+    .panel::before {
+      content: "";
+      position: absolute;
+      z-index: 0;
+      inset: -55%;
+      pointer-events: none;
+      opacity: .20;
+      filter: blur(34px);
+      background: conic-gradient(from 0deg, transparent 0 23%, rgba(255,38,54,.68) 31%, transparent 43% 67%, rgba(255,219,89,.7) 76%, transparent 88% 100%);
+      animation: rotateAura 16s linear infinite;
+    }
+
+    .panel::after {
+      content: "";
+      position: absolute;
+      z-index: 1;
+      top: -15%;
+      bottom: -15%;
+      left: -78%;
+      width: 38%;
+      pointer-events: none;
+      opacity: .26;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.20), rgba(255,225,111,.17), transparent);
+      transform: skewX(-19deg);
+      animation: panelSweep 8.5s ease-in-out infinite;
+    }
+
+    @keyframes rotateAura { to { transform: rotate(360deg); } }
+    @keyframes panelSweep {
+      0%, 45% { left: -78%; }
+      72%, 100% { left: 145%; }
+    }
+
+    .content { position: relative; z-index: 2; padding: 26px 27px 22px; }
+
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 5px 3px 21px;
+    }
+
+    .logo {
+      position: relative;
+      flex: 0 0 auto;
+      display: grid;
+      place-items: center;
+      width: 70px;
+      height: 70px;
+      overflow: hidden;
+      border: 1px solid rgba(255,222,105,.36);
+      border-radius: 20px;
+      color: #ffe88d;
+      background: radial-gradient(circle at 30% 20%, rgba(255,255,255,.2), transparent 30%), linear-gradient(145deg, rgba(255,38,54,.31), rgba(112,4,19,.23));
+      box-shadow: 0 14px 34px rgba(0,0,0,.43), 0 0 25px rgba(242,35,54,.12), inset 0 1px 0 rgba(255,255,255,.13);
+      font-size: 28px;
+      font-weight: 900;
+      text-shadow: 0 0 16px rgba(255,213,78,.35);
+    }
+
+    .logo::after {
+      content: "";
+      position: absolute;
+      inset: 4px;
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 16px;
+      pointer-events: none;
+    }
+
+    .logo img {
+      position: absolute;
+      z-index: 2;
+      width: 64px;
+      height: 64px;
+      object-fit: contain;
+      filter: drop-shadow(0 10px 18px rgba(0,0,0,.48));
+      animation: logoFloat 3.6s ease-in-out infinite;
+    }
+
+    @keyframes logoFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-3px); }
+    }
+
+    .headline { min-width: 0; }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 6px;
+      color: #ffe899;
+      font-size: 10px;
+      font-weight: 850;
+      letter-spacing: .7px;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 0 5px rgba(37,211,102,.09), 0 0 10px rgba(37,211,102,.45);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(19px, 4vw, 25px);
+      line-height: 1.17;
+      letter-spacing: -.35px;
+      background: linear-gradient(92deg, #fff 5%, #ffe899 48%, #fff 88%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .headline p { margin: 7px 0 0; color: var(--muted); font-size: 12px; line-height: 1.45; }
+
+    .status {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 0 2px 15px;
+      padding: 10px 12px;
+      border: 1px solid rgba(255,220,102,.16);
+      border-radius: 14px;
+      color: rgba(255,255,255,.65);
+      background: linear-gradient(90deg, rgba(255,255,255,.05), rgba(255,211,83,.04));
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.055);
+      font-size: 11px;
+    }
+
+    .status-left { display: flex; align-items: center; gap: 8px; }
+    .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); box-shadow: 0 0 0 5px rgba(37,211,102,.08); }
+    .status-dot.loading { background: var(--gold); box-shadow: 0 0 0 5px rgba(246,211,101,.10); animation: pulse 1.1s ease-in-out infinite; }
+    @keyframes pulse { 50% { transform: scale(1.22); opacity: .7; } }
+
+    .groups { display: grid; gap: 14px; }
+
+    .group-link {
+      --accent-rgb: 255, 210, 87;
+      position: relative;
+      isolation: isolate;
+      overflow: hidden;
+      min-height: 82px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 13px;
+      padding: 14px;
+      border: 1px solid rgba(var(--accent-rgb), .25);
+      border-radius: 21px;
+      color: var(--text);
+      text-decoration: none;
+      background: radial-gradient(circle at 5% 50%, rgba(var(--accent-rgb),.11), transparent 36%), linear-gradient(115deg, rgba(255,255,255,.09), rgba(255,255,255,.035) 55%, rgba(var(--accent-rgb),.06));
+      box-shadow: 0 14px 30px rgba(0,0,0,.33), inset 0 1px 0 rgba(255,255,255,.09);
+      transition: transform .22s ease, border-color .22s ease, box-shadow .22s ease, opacity .22s ease;
+      outline: none;
+    }
+
+    .group-link::before {
+      content: "";
+      position: absolute;
+      z-index: 1;
+      top: -40%;
+      bottom: -40%;
+      left: -65%;
+      width: 36%;
+      pointer-events: none;
+      opacity: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.62), rgba(255,232,158,.38), transparent);
+      transform: skewX(-20deg);
+      animation: linkShine 5.5s ease-in-out infinite;
+    }
+
+    .group-link::after {
+      content: "";
+      position: absolute;
+      z-index: 0;
+      left: 12%;
+      right: 12%;
+      bottom: -19px;
+      height: 25px;
+      border-radius: 50%;
+      pointer-events: none;
+      background: rgba(var(--accent-rgb), .3);
+      filter: blur(20px);
+      opacity: .48;
+    }
+
+    .group-link:nth-child(2)::before { animation-delay: -3.7s; }
+    .group-link:nth-child(3)::before { animation-delay: -1.9s; }
+
+    @keyframes linkShine {
+      0%, 57% { left: -65%; opacity: 0; }
+      64% { opacity: .76; }
+      84%, 100% { left: 133%; opacity: 0; }
+    }
+
+    .group-link > * { position: relative; z-index: 2; }
+
+    .group-link:hover {
+      transform: translateY(-3px) scale(1.008);
+      border-color: rgba(var(--accent-rgb), .50);
+      box-shadow: 0 20px 42px rgba(0,0,0,.41), 0 0 28px rgba(var(--accent-rgb),.11), inset 0 1px 0 rgba(255,255,255,.14);
+    }
+
+    .group-link:focus-visible { box-shadow: 0 0 0 4px rgba(var(--accent-rgb),.18), 0 18px 38px rgba(0,0,0,.40); }
+    .whatsapp { --accent-rgb: 37, 211, 102; }
+    .telegram { --accent-rgb: 42, 171, 238; }
+    .facebook { --accent-rgb: 66, 103, 178; }
+
+    .link-left { display: flex; align-items: center; gap: 14px; min-width: 0; }
+
+    .thumb {
+      position: relative;
+      flex: 0 0 auto;
+      display: grid;
+      place-items: center;
+      width: 54px;
+      height: 54px;
+      overflow: visible;
+      border: 1px solid rgba(255,255,255,.32);
+      border-radius: 18px;
+      color: #fff;
+      box-shadow: 0 12px 26px rgba(0,0,0,.32), inset 0 1px 1px rgba(255,255,255,.3), inset 0 -9px 17px rgba(0,0,0,.11);
+    }
+
+    .thumb::before {
+      content: "";
+      position: absolute;
+      inset: 3px;
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: 14px;
+      pointer-events: none;
+    }
+
+    .thumb::after {
+      content: "";
+      position: absolute;
+      top: 5px;
+      left: 8px;
+      width: 22px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.22);
+      filter: blur(3px);
+      transform: rotate(-18deg);
+      pointer-events: none;
+    }
+
+    .thumb.whatsapp-bg { background: linear-gradient(145deg, #40ed79, #20c45c 58%, #119242); box-shadow: 0 12px 27px rgba(37,211,102,.25), inset 0 1px 1px rgba(255,255,255,.3); }
+    .thumb.telegram-bg { background: linear-gradient(145deg, #5bc8f5, #2aabee 58%, #157ebd); box-shadow: 0 12px 27px rgba(42,171,238,.25), inset 0 1px 1px rgba(255,255,255,.3); }
+    .thumb.facebook-bg { background: linear-gradient(145deg, #6996ed, #4267b2 58%, #294a8e); box-shadow: 0 12px 27px rgba(66,103,178,.26), inset 0 1px 1px rgba(255,255,255,.3); }
+
+    .brand-mark { position: relative; z-index: 2; width: 31px; height: 31px; filter: drop-shadow(0 5px 7px rgba(0,0,0,.28)); }
+
+    .people-badge {
+      position: absolute;
+      z-index: 5;
+      right: -6px;
+      bottom: -6px;
+      display: grid;
+      place-items: center;
+      width: 23px;
+      height: 23px;
+      border: 2px solid #161014;
+      border-radius: 50%;
+      color: #ffe792;
+      background: linear-gradient(145deg, #4b3036, #171116);
+      box-shadow: 0 6px 12px rgba(0,0,0,.4), 0 0 11px rgba(255,211,85,.16);
+    }
+
+    .people-badge svg { width: 13px; height: 13px; }
+
+    .label { min-width: 0; }
+    .label strong { display: block; overflow: hidden; color: rgba(255,255,255,.98); font-size: 13px; letter-spacing: .28px; text-overflow: ellipsis; white-space: nowrap; text-transform: uppercase; }
+    .label span { display: block; overflow: hidden; margin-top: 6px; color: rgba(255,255,255,.59); font-size: 11.2px; text-overflow: ellipsis; white-space: nowrap; }
+
+    .arrow {
+      flex: 0 0 auto;
+      display: grid;
+      place-items: center;
+      width: 40px;
+      height: 40px;
+      border: 1px solid rgba(var(--accent-rgb),.22);
+      border-radius: 14px;
+      background: linear-gradient(145deg, rgba(var(--accent-rgb),.18), rgba(255,255,255,.045));
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.07);
+      transition: transform .2s ease, background .2s ease;
+    }
+
+    .arrow svg { width: 17px; height: 17px; }
+    .group-link:hover .arrow { transform: translateX(2px); background: linear-gradient(145deg, rgba(var(--accent-rgb),.28), rgba(255,255,255,.07)); }
+
+    .group-link.disabled {
+      cursor: not-allowed;
+      opacity: .43;
+      filter: grayscale(.72) saturate(.55);
+      border-style: dashed;
+    }
+
+    .group-link.disabled::before,
+    .group-link.disabled::after { display: none; }
+    .group-link.disabled:hover { transform: none; box-shadow: 0 14px 30px rgba(0,0,0,.27); }
+    .group-link.disabled .label span { color: rgba(255,135,145,.9); }
+
+    .notice {
+      margin-top: 17px;
+      padding: 12px 13px;
+      border: 1px solid rgba(255,211,83,.12);
+      border-radius: 14px;
+      color: rgba(255,255,255,.50);
+      background: rgba(255,255,255,.025);
+      font-size: 10.8px;
+      line-height: 1.5;
+      text-align: center;
+    }
+
+    .footer {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 14px 27px 16px;
+      border-top: 1px solid rgba(255,219,91,.10);
+      color: rgba(255,255,255,.43);
+      background: linear-gradient(90deg, rgba(255,255,255,.025), rgba(255,215,91,.028));
+      font-size: 10px;
+    }
+
+    .refresh-pill { padding: 6px 9px; border: 1px solid rgba(255,215,91,.14); border-radius: 999px; color: rgba(255,255,255,.57); background: rgba(255,215,91,.045); white-space: nowrap; }
+
+    @media (max-width: 480px) {
+      body { align-items: flex-start; padding: 16px 11px; }
+      .content { padding: 20px 13px 16px; }
+      .header { gap: 12px; padding: 3px 4px 18px; }
+      .logo { width: 60px; height: 60px; border-radius: 17px; }
+      .logo img { width: 55px; height: 55px; }
+      h1 { font-size: 18px; }
+      .headline p { font-size: 10.7px; }
+      .group-link { min-height: 76px; padding: 12px 11px; }
+      .thumb { width: 49px; height: 49px; border-radius: 16px; }
+      .brand-mark { width: 28px; height: 28px; }
+      .label strong { font-size: 11.5px; }
+      .label span { font-size: 10.2px; }
+      .arrow { width: 36px; height: 36px; }
+      .footer { padding-inline: 16px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section class="panel" aria-label="Grup resmi MAGNUM188">
+      <div class="content">
+        <header class="header">
+          <div class="logo" aria-hidden="true">
+            M
+            <img src="https://pengen-tau-ya.vercel.app/magnum188/favicon.ico" alt="" onerror="this.style.display='none'">
+          </div>
+          <div class="headline">
+            <div class="eyebrow">Komunitas terverifikasi</div>
+            <h1>Grup Resmi MAGNUM188</h1>
+            <p>Pilih komunitas yang ingin Anda ikuti.</p>
+          </div>
+        </header>
+
+        <div class="status" aria-live="polite">
+          <div class="status-left">
+            <span id="statusDot" class="status-dot loading"></span>
+            <span id="statusText">Memeriksa ketersediaan grup...</span>
+          </div>
+          <span id="availableCount">0/3</span>
+        </div>
+
+        <div class="groups">
+          <a id="whatsappGroupLink" class="group-link whatsapp" href="#" target="_blank" rel="noopener noreferrer">
+            <div class="link-left">
+              <div class="thumb whatsapp-bg" aria-hidden="true">
+                <svg class="brand-mark" viewBox="0 0 24 24" fill="none">
+                  <path d="M20 11.6a8 8 0 0 1-11.8 7L4 20l1.4-4A8 8 0 1 1 20 11.6Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M8.2 7.8c.4-.4.8-.2 1 .2l.8 1.7c.1.3.1.6-.2.8l-.6.6c.5 1.3 1.6 2.4 2.9 2.9l.7-.7c.2-.2.5-.3.8-.1l1.7.8c.4.2.5.6.3 1-.4.8-1.2 1.3-2.1 1.2-3.1-.4-5.8-3.1-6.2-6.2-.1-.9.3-1.7.9-2.2Z" fill="currentColor"/>
+                </svg>
+                <span class="people-badge">
+                  <svg viewBox="0 0 16 16" fill="none"><circle cx="6" cy="6" r="2" fill="currentColor"/><circle cx="11.5" cy="6.7" r="1.5" fill="currentColor"/><path d="M2.5 13c.25-2.35 1.45-3.5 3.5-3.5s3.25 1.15 3.5 3.5M9.5 10.3c2-.55 3.55.4 3.9 2.7" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/></svg>
+                </span>
+              </div>
+              <div class="label"><strong>Grup WhatsApp Official</strong><span>Bergabung melalui WhatsApp</span></div>
+            </div>
+            <div class="arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="m9 18 6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          </a>
+
+          <a id="telegramGroupLink" class="group-link telegram" href="#" target="_blank" rel="noopener noreferrer">
+            <div class="link-left">
+              <div class="thumb telegram-bg" aria-hidden="true">
+                <svg class="brand-mark" viewBox="0 0 24 24" fill="none"><path d="M20.5 4.5 17.7 19c-.2 1-1 1.2-1.8.7l-4.3-3.2-2.1 2c-.2.2-.4.4-.9.4l.3-4.4 8-7.2c.4-.3-.1-.5-.5-.2l-9.9 6.2-4.2-1.3c-.9-.3-.9-.9.2-1.3l16.4-6.3c.8-.3 1.5.2 1.2 1.3Z" fill="currentColor"/></svg>
+                <span class="people-badge">
+                  <svg viewBox="0 0 16 16" fill="none"><circle cx="6" cy="6" r="2" fill="currentColor"/><circle cx="11.5" cy="6.7" r="1.5" fill="currentColor"/><path d="M2.5 13c.25-2.35 1.45-3.5 3.5-3.5s3.25 1.15 3.5 3.5M9.5 10.3c2-.55 3.55.4 3.9 2.7" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/></svg>
+                </span>
+              </div>
+              <div class="label"><strong>Grup Telegram Official</strong><span>Bergabung melalui Telegram</span></div>
+            </div>
+            <div class="arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="m9 18 6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          </a>
+
+          <a id="facebookGroupLink" class="group-link facebook" href="#" target="_blank" rel="noopener noreferrer">
+            <div class="link-left">
+              <div class="thumb facebook-bg" aria-hidden="true">
+                <svg class="brand-mark" viewBox="0 0 24 24" fill="none"><path d="M14.2 21v-8h2.7l.4-3.1h-3.1v-2c0-.9.25-1.5 1.55-1.5h1.65V3.62c-.29-.04-1.27-.12-2.42-.12-2.4 0-4.05 1.47-4.05 4.16V10H8.2v3.1h2.73V21h3.27Z" fill="currentColor"/></svg>
+                <span class="people-badge">
+                  <svg viewBox="0 0 16 16" fill="none"><circle cx="6" cy="6" r="2" fill="currentColor"/><circle cx="11.5" cy="6.7" r="1.5" fill="currentColor"/><path d="M2.5 13c.25-2.35 1.45-3.5 3.5-3.5s3.25 1.15 3.5 3.5M9.5 10.3c2-.55 3.55.4 3.9 2.7" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"/></svg>
+                </span>
+              </div>
+              <div class="label"><strong>Grup Facebook Official</strong><span>Bergabung melalui Facebook</span></div>
+            </div>
+            <div class="arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="m9 18 6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          </a>
+        </div>
+
+        <div class="notice">Pastikan hanya bergabung melalui halaman resmi ini. Grup yang sedang ditutup atau tidak tersedia akan otomatis dinonaktifkan.</div>
+      </div>
+
+      <footer class="footer">
+        <span>MAGNUM188 • Official Community</span>
+        <span id="refreshPill" class="refresh-pill">Auto refresh: 30s</span>
+      </footer>
+    </section>
+  </main>
+
+  <script>
+    "use strict";
+
+    var fetchInterval;
+    var services = {
+      whatsapp_group: {
+        selector: "#whatsappGroupLink",
+        readyText: "Bergabung melalui WhatsApp",
+        disabledText: "Grup WhatsApp sedang tidak tersedia."
+      },
+      telegram_group: {
+        selector: "#telegramGroupLink",
+        readyText: "Bergabung melalui Telegram",
+        disabledText: "Grup Telegram sedang tidak tersedia."
+      },
+      facebook_group: {
+        selector: "#facebookGroupLink",
+        readyText: "Bergabung melalui Facebook",
+        disabledText: "Grup Facebook sedang tidak tersedia."
+      }
+    };
+
+    function setLoading(loading) {
+      var dot = document.getElementById("statusDot");
+      if (dot) dot.classList.toggle("loading", loading);
+    }
+
+    function disableService(key) {
+      var cfg = services[key];
+      var link = cfg && document.querySelector(cfg.selector);
+      if (!link) return;
+      link.removeAttribute("href");
+      link.classList.add("disabled");
+      link.setAttribute("aria-disabled", "true");
+      link.setAttribute("title", cfg.disabledText);
+      link.dataset.disabledMessage = cfg.disabledText;
+      var description = link.querySelector(".label span");
+      if (description) description.textContent = "Sedang tidak tersedia";
+    }
+
+    function enableService(key, value) {
+      var cfg = services[key];
+      var url = String(value || "").trim();
+      if (!cfg || url.indexOf("/go/") !== 0) {
+        disableService(key);
+        return false;
+      }
+
+      var link = document.querySelector(cfg.selector);
+      if (!link) return false;
+      link.href = url;
+      link.classList.remove("disabled");
+      link.removeAttribute("aria-disabled");
+      link.removeAttribute("title");
+      delete link.dataset.disabledMessage;
+      var description = link.querySelector(".label span");
+      if (description) description.textContent = cfg.readyText;
+      return true;
+    }
+
+    function applyServices(data) {
+      var active = 0;
+      Object.keys(services).forEach(function (key) {
+        if (enableService(key, data && data[key])) active += 1;
+      });
+
+      document.getElementById("availableCount").textContent = active + "/3";
+      document.getElementById("statusText").textContent = active === 3
+        ? "Semua grup tersedia"
+        : active > 0
+          ? "Sebagian grup sedang tidak tersedia"
+          : "Semua grup sedang tidak tersedia";
+    }
+
+    async function fetchContacts() {
+      setLoading(true);
+      document.getElementById("statusText").textContent = "Memeriksa ketersediaan grup...";
+      try {
+        var response = await fetch("/api/contacts", { cache: "no-store" });
+        if (!response.ok) throw new Error("Gagal membaca grup");
+        applyServices(await response.json());
+      } catch (_) {
+        applyServices(null);
+        document.getElementById("statusText").textContent = "Gagal membaca ketersediaan grup";
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    async function getDuration() {
+      var duration = 30000;
+      try {
+        var response = await fetch("/api/duration", { cache: "no-store" });
+        if (response.ok) {
+          var data = await response.json();
+          if (Number(data.durasi) >= 5000) duration = Number(data.durasi);
+        }
+      } catch (_) {}
+
+      clearInterval(fetchInterval);
+      fetchInterval = setInterval(fetchContacts, duration);
+      document.getElementById("refreshPill").textContent = "Auto refresh: " + Math.round(duration / 1000) + "s";
+    }
+
+    document.addEventListener("click", function (event) {
+      var link = event.target.closest(".group-link.disabled");
+      if (!link) return;
+      event.preventDefault();
+      alert(link.dataset.disabledMessage || "Grup sedang tidak tersedia.");
+    });
+
+    fetchContacts();
+    getDuration();
+  </script>
+</body>
+</html>
