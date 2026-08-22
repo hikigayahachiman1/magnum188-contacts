@@ -6,8 +6,9 @@ halaman `/admin/` tanpa membuka menu KV secara manual.
 
 ## Isi paket
 
-- `index.html`: halaman kontak publik premium dengan efek kilau, tombol Channel
-  Telegram, Link Alternatif di bagian header, ikon SVG, dan badge tombol grup.
+- `index.html`: halaman kontak publik premium dengan efek kilau, tombol
+  Telegram Official dan Channel Telegram yang terpisah, Link Alternatif di
+  bagian header, ikon SVG, dan badge tombol grup.
 - `groupm188/index.html`: halaman khusus Channel Telegram serta grup resmi
   WhatsApp, Telegram, dan Facebook yang dapat dibuka melalui `/groupm188/`.
 - `admin/index.html`: panel admin untuk edit link dan status.
@@ -77,21 +78,23 @@ menambahkan binding/secret, lakukan deployment baru.
 4. Gunakan tombol Tes untuk memeriksa link.
 5. Klik Simpan Perubahan.
 
-Perubahan untuk `Telegram`, `Grup WhatsApp`, `Grup Telegram`, dan
+Perubahan untuk `Channel Telegram`, `Grup WhatsApp`, `Grup Telegram`, dan
 `Grup Facebook` juga otomatis digunakan oleh halaman
 `https://livemagnum188.chat/groupm188/`.
 Tidak diperlukan binding KV atau panel admin tambahan. Halaman memeriksa
 pembaruan secara berkala; tombol grup yang dinonaktifkan tidak dapat dibuka.
 
-Panel menyimpan link ke key (`whatsapp`, `telegram`, `alternative`, dan
-seterusnya) serta status ke key `status:<channel>`. Data lama tetap kompatibel:
-link lama yang sudah terisi dianggap aktif, sedangkan Link Alternatif baru yang
-masih kosong dimulai dalam keadaan nonaktif.
+Panel menyimpan link ke key (`whatsapp`, `telegram`, `telegram_channel`,
+`alternative`, dan seterusnya) serta status ke key `status:<channel>`. Data lama
+tetap kompatibel: link lama yang sudah terisi dianggap aktif, sedangkan Channel
+Telegram dan Link Alternatif baru yang masih kosong dimulai dalam keadaan
+nonaktif.
 
 ## Domain tujuan yang diizinkan
 
 - WhatsApp: `wa.me`, `api.whatsapp.com`, `pasticuan.me`.
 - Telegram: `t.me`, `telegram.me`, `pasticuan.me`.
+- Channel Telegram: `t.me`, `telegram.me`, `pasticuan.me`.
 - LiveChat: `direct.lc.chat`, `pasticuan.me`.
 - Grup WhatsApp: `chat.whatsapp.com`, `pasticuan.me`.
 - Grup Telegram: `t.me`, `telegram.me`, `pasticuan.me`.

@@ -1,6 +1,7 @@
 const CHANNELS = [
   "whatsapp",
   "telegram",
+  "telegram_channel",
   "livechat",
   "whatsapp_group",
   "telegram_group",

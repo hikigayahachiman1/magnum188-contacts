@@ -1,6 +1,7 @@
 const CHANNELS = [
   "whatsapp",
   "telegram",
+  "telegram_channel",
   "livechat",
   "whatsapp_group",
   "telegram_group",
@@ -11,6 +12,7 @@ const CHANNELS = [
 const ALLOWED_HOSTS = {
   whatsapp: new Set(["api.whatsapp.com", "wa.me", "pasticuan.me", "www.pasticuan.me"]),
   telegram: new Set(["t.me", "telegram.me", "pasticuan.me", "www.pasticuan.me"]),
+  telegram_channel: new Set(["t.me", "telegram.me", "pasticuan.me", "www.pasticuan.me"]),
   livechat: new Set(["direct.lc.chat", "pasticuan.me", "www.pasticuan.me"]),
   whatsapp_group: new Set(["chat.whatsapp.com", "pasticuan.me", "www.pasticuan.me"]),
   telegram_group: new Set(["t.me", "telegram.me", "pasticuan.me", "www.pasticuan.me"]),
