@@ -5,6 +5,16 @@ const CHANNEL_HOSTS = {
   whatsapp_group: new Set(["chat.whatsapp.com", "pasticuan.me", "www.pasticuan.me"]),
   telegram_group: new Set(["t.me", "telegram.me", "pasticuan.me", "www.pasticuan.me"]),
   facebook_group: new Set(["facebook.com", "www.facebook.com", "pasticuan.me", "www.pasticuan.me"]),
+  alternative: new Set([
+    "pasticuan.me",
+    "www.pasticuan.me",
+    "shrtl.sbs",
+    "www.shrtl.sbs",
+    "livemagnum188.chat",
+    "www.livemagnum188.chat",
+    "heylink.me",
+    "www.heylink.me",
+  ]),
 };
 
 function errorResponse(message, status) {

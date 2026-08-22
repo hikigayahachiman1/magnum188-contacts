@@ -6,10 +6,10 @@ halaman `/admin/` tanpa membuka menu KV secara manual.
 
 ## Isi paket
 
-- `index.html`: halaman kontak publik premium dengan efek kilau, warna platform,
-  enam ikon SVG, dan badge khusus untuk tombol grup.
-- `groupm188/index.html`: halaman khusus pencarian grup resmi WhatsApp,
-  Telegram, dan Facebook yang dapat dibuka melalui `/groupm188/`.
+- `index.html`: halaman kontak publik premium dengan efek kilau, tombol Channel
+  Telegram, Link Alternatif di bagian header, ikon SVG, dan badge tombol grup.
+- `groupm188/index.html`: halaman khusus Channel Telegram serta grup resmi
+  WhatsApp, Telegram, dan Facebook yang dapat dibuka melalui `/groupm188/`.
 - `admin/index.html`: panel admin untuk edit link dan status.
 - `functions/api/admin.js`: login, logout, baca, dan simpan konfigurasi.
 - `functions/api/contacts.js`: memberikan alias kontak aktif kepada halaman publik.
@@ -77,14 +77,16 @@ menambahkan binding/secret, lakukan deployment baru.
 4. Gunakan tombol Tes untuk memeriksa link.
 5. Klik Simpan Perubahan.
 
-Perubahan untuk `Grup WhatsApp`, `Grup Telegram`, dan `Grup Facebook` juga
-otomatis digunakan oleh halaman `https://livemagnum188.chat/groupm188/`.
+Perubahan untuk `Telegram`, `Grup WhatsApp`, `Grup Telegram`, dan
+`Grup Facebook` juga otomatis digunakan oleh halaman
+`https://livemagnum188.chat/groupm188/`.
 Tidak diperlukan binding KV atau panel admin tambahan. Halaman memeriksa
 pembaruan secara berkala; tombol grup yang dinonaktifkan tidak dapat dibuka.
 
-Panel menyimpan link ke key lama (`whatsapp`, `telegram`, dan seterusnya) serta
-status ke key `status:<channel>`. Jika status lama belum ada, sistem menganggap
-kontak tersebut aktif sehingga tetap kompatibel dengan data KV yang sekarang.
+Panel menyimpan link ke key (`whatsapp`, `telegram`, `alternative`, dan
+seterusnya) serta status ke key `status:<channel>`. Data lama tetap kompatibel:
+link lama yang sudah terisi dianggap aktif, sedangkan Link Alternatif baru yang
+masih kosong dimulai dalam keadaan nonaktif.
 
 ## Domain tujuan yang diizinkan
 
@@ -94,6 +96,8 @@ kontak tersebut aktif sehingga tetap kompatibel dengan data KV yang sekarang.
 - Grup WhatsApp: `chat.whatsapp.com`, `pasticuan.me`.
 - Grup Telegram: `t.me`, `telegram.me`, `pasticuan.me`.
 - Grup Facebook: `facebook.com`, `www.facebook.com`, `pasticuan.me`.
+- Link Alternatif: `pasticuan.me`, `shrtl.sbs`, `livemagnum188.chat`,
+  `heylink.me`, termasuk versi `www`.
 
 Hanya protokol HTTPS yang diterima. Daftar ini mencegah panel digunakan sebagai
 open redirect menuju domain sembarangan.
@@ -105,6 +109,7 @@ open redirect menuju domain sembarangan.
 - `/api/contacts` hanya menampilkan `/go/...`, bukan link asli.
 - Kontak nonaktif harus menghilang/nonaktif pada halaman publik.
 - `/go/<channel>` untuk kontak nonaktif harus menghasilkan pesan penolakan.
+- `/go/alternative` hanya mengarahkan ke domain alternatif yang diizinkan.
 - Sesi admin berakhir otomatis setelah 8 jam.
 
 ## Catatan keamanan

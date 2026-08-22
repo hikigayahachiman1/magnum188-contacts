@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Kontak Resmi Magnum188 Official</title>
     <link rel="icon" type="image/png"
-        href="https://pengen-tau-ya.vercel.app/magnum188/iconm188.ico" />
+        href="https://pengen-tau-ya.vercel.app/magnum188/favicon.ico" />
 
     <!-- Optional: font modern (boleh hapus kalau mau super ringan) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -571,6 +571,74 @@
             box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
         }
 
+        .brand-text { min-width: 0; }
+
+        .alternative-link {
+            position: relative;
+            isolation: isolate;
+            overflow: hidden;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-height: 42px;
+            margin-left: auto;
+            padding: 0 14px;
+            flex: 0 0 auto;
+            border: 1px solid rgba(255, 215, 76, .68);
+            border-radius: 15px;
+            color: #ffe58a;
+            background: linear-gradient(135deg, rgba(255, 219, 91, .13), rgba(42, 18, 20, .76));
+            box-shadow: 0 10px 25px rgba(0,0,0,.30), 0 0 18px rgba(255,210,75,.08), inset 0 1px 0 rgba(255,255,255,.10);
+            text-decoration: none;
+            font-size: 10.5px;
+            font-weight: 800;
+            letter-spacing: .45px;
+            white-space: nowrap;
+            transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease, opacity .2s ease;
+        }
+
+        .alternative-link::before {
+            content: "";
+            position: absolute;
+            z-index: -1;
+            top: -45%;
+            bottom: -45%;
+            left: -65%;
+            width: 42%;
+            opacity: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,.50), rgba(255,226,127,.30), transparent);
+            transform: skewX(-20deg);
+            animation: alternativeShine 5.2s ease-in-out infinite;
+        }
+
+        .alternative-link svg { width: 17px; height: 17px; flex: 0 0 auto; }
+
+        .alternative-link:hover {
+            transform: translateY(-2px);
+            border-color: rgba(255, 229, 134, .92);
+            box-shadow: 0 13px 29px rgba(0,0,0,.35), 0 0 23px rgba(255,210,75,.15), inset 0 1px 0 rgba(255,255,255,.14);
+        }
+
+        .alternative-link:focus-visible {
+            outline: 0;
+            box-shadow: 0 0 0 4px rgba(255,214,87,.14), 0 13px 29px rgba(0,0,0,.35);
+        }
+
+        .alternative-link.is-disabled {
+            opacity: .36;
+            filter: grayscale(.85);
+            cursor: not-allowed;
+        }
+
+        .alternative-link.is-disabled::before { display: none; }
+
+        @keyframes alternativeShine {
+            0%, 56% { left: -65%; opacity: 0; }
+            64% { opacity: .74; }
+            86%, 100% { left: 135%; opacity: 0; }
+        }
+
         .links { gap: 13px; padding: 9px 8px 11px; }
 
         .link {
@@ -762,6 +830,25 @@
 
         .pill { border-color: rgba(255,215,91,.14); background: rgba(255,215,91,.045); }
 
+        @media (max-width: 540px) {
+            .brand {
+                display: grid;
+                grid-template-columns: auto minmax(0, 1fr);
+                align-items: center;
+            }
+            .logo-wrap { grid-row: 1 / span 2; }
+            .alternative-link {
+                grid-column: 2;
+                justify-self: start;
+                min-height: 36px;
+                margin: 1px 0 0;
+                padding: 0 11px;
+                border-radius: 13px;
+                font-size: 9.5px;
+            }
+            .alternative-link svg { width: 15px; height: 15px; }
+        }
+
         @media (max-width: 420px) {
             .panel-inner { padding: 19px 12px 14px; }
             .brand { padding-inline: 9px; }
@@ -793,7 +880,7 @@
                 <header class="brand">
                     <div class="logo-wrap" aria-hidden="true">
                         <span class="logo-fallback">M</span>
-                        <img src="https://pengen-tau-ya.vercel.app/magnum188/iconm188.ico"
+                        <img src="https://pengen-tau-ya.vercel.app/magnum188/favicon.ico"
                             alt="MAGNUM188" onerror="this.style.display='none'" />
                     </div>
                     <div class="brand-text">
@@ -804,6 +891,12 @@
                             <span id="statusText">Online • Layanan siap digunakan</span>
                         </div>
                     </div>
+                    <a id="alternativeLink" class="alternative-link" href="#" target="_blank" rel="noopener noreferrer">
+                        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <path d="m9.5 14.5 5-5M7.2 16.8l-1.1 1.1a3.4 3.4 0 0 1-4.8-4.8l3.2-3.2a3.4 3.4 0 0 1 4.8 0M16.8 7.2l1.1-1.1a3.4 3.4 0 1 1 4.8 4.8l-3.2 3.2a3.4 3.4 0 0 1-4.8 0" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <span>LINK ALTERNATIF</span>
+                    </a>
                 </header>
 
                 <main class="links">
@@ -836,8 +929,8 @@
                                 </svg>
                             </div>
                             <div class="label">
-                                <strong>Telegram Official</strong>
-                                <span>Update info & bantuan via chat</span>
+                                <strong>Channel Telegram Official</strong>
+                                <span>Ikuti informasi resmi MAGNUM188</span>
                             </div>
                         </div>
                         <div class="chev" aria-hidden="true">
@@ -957,6 +1050,11 @@
         var fetchInterval;
 
         var services = {
+            alternative: {
+                selector: '#alternativeLink',
+                readyText: 'Buka link alternatif resmi',
+                disabledText: 'Link alternatif sedang tidak tersedia.'
+            },
             whatsapp: {
                 selector: '#whatsappLink',
                 readyText: 'Respon cepat & bantuan akun',
@@ -964,8 +1062,8 @@
             },
             telegram: {
                 selector: '#telegramLink',
-                readyText: 'Update info & bantuan via chat',
-                disabledText: 'Telegram Official sedang tidak tersedia.'
+                readyText: 'Ikuti informasi resmi MAGNUM188',
+                disabledText: 'Channel Telegram sedang tidak tersedia.'
             },
             livechat: {
                 selector: '#livechatLink',
@@ -1088,7 +1186,7 @@
         }
 
         document.addEventListener('click', function (event) {
-            var link = event.target.closest('.link.is-disabled');
+            var link = event.target.closest('.link.is-disabled, .alternative-link.is-disabled');
             if (!link) return;
             event.preventDefault();
             alert(link.dataset.disabledMessage || 'Layanan sedang tidak tersedia atau belum tersedia.');

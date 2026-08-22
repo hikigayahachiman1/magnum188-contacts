@@ -5,6 +5,7 @@ const CHANNELS = [
   "whatsapp_group",
   "telegram_group",
   "facebook_group",
+  "alternative",
 ];
 
 const jsonHeaders = {

@@ -6,7 +6,7 @@
   <meta name="color-scheme" content="dark">
   <meta name="description" content="Temukan dan bergabung ke komunitas resmi MAGNUM188 melalui WhatsApp, Telegram, dan Facebook.">
   <title>Grup Resmi MAGNUM188</title>
-  <link rel="icon" type="image/png" href="https://pengen-tau-ya.vercel.app/magnum188/iconm188.ico">
+  <link rel="icon" type="image/png" href="https://pengen-tau-ya.vercel.app/magnum188/favicon.ico">
   <style>
     :root {
       color-scheme: dark;
@@ -441,24 +441,34 @@
         <header class="header">
           <div class="logo" aria-hidden="true">
             M
-            <img src="https://pengen-tau-ya.vercel.app/magnum188/iconm188.ico" alt="" onerror="this.style.display='none'">
+            <img src="https://pengen-tau-ya.vercel.app/magnum188/favicon.ico" alt="" onerror="this.style.display='none'">
           </div>
           <div class="headline">
             <div class="eyebrow">Komunitas terverifikasi</div>
             <h1>Grup Resmi MAGNUM188</h1>
-            <p>Pilih komunitas yang ingin Anda ikuti.</p>
+            <p>Pilih channel atau komunitas yang ingin Anda ikuti.</p>
           </div>
         </header>
 
         <div class="status" aria-live="polite">
           <div class="status-left">
             <span id="statusDot" class="status-dot loading"></span>
-            <span id="statusText">Memeriksa ketersediaan grup...</span>
+            <span id="statusText">Memeriksa ketersediaan komunitas...</span>
           </div>
-          <span id="availableCount">0/3</span>
+          <span id="availableCount">0/4</span>
         </div>
 
         <div class="groups">
+          <a id="telegramChannelLink" class="group-link telegram" href="#" target="_blank" rel="noopener noreferrer">
+            <div class="link-left">
+              <div class="thumb telegram-bg" aria-hidden="true">
+                <svg class="brand-mark" viewBox="0 0 24 24" fill="none"><path d="M20.5 4.5 17.7 19c-.2 1-1 1.2-1.8.7l-4.3-3.2-2.1 2c-.2.2-.4.4-.9.4l.3-4.4 8-7.2c.4-.3-.1-.5-.5-.2l-9.9 6.2-4.2-1.3c-.9-.3-.9-.9.2-1.3l16.4-6.3c.8-.3 1.5.2 1.2 1.3Z" fill="currentColor"/></svg>
+              </div>
+              <div class="label"><strong>Channel Telegram Official</strong><span>Ikuti informasi resmi MAGNUM188</span></div>
+            </div>
+            <div class="arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="m9 18 6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          </a>
+
           <a id="whatsappGroupLink" class="group-link whatsapp" href="#" target="_blank" rel="noopener noreferrer">
             <div class="link-left">
               <div class="thumb whatsapp-bg" aria-hidden="true">
@@ -502,7 +512,7 @@
           </a>
         </div>
 
-        <div class="notice">Pastikan hanya bergabung melalui halaman resmi ini. Grup yang sedang ditutup atau tidak tersedia akan otomatis dinonaktifkan.</div>
+        <div class="notice">Pastikan hanya mengikuti channel atau bergabung ke grup melalui halaman resmi ini. Layanan yang sedang ditutup atau tidak tersedia akan otomatis dinonaktifkan.</div>
       </div>
 
       <footer class="footer">
@@ -517,6 +527,11 @@
 
     var fetchInterval;
     var services = {
+      telegram: {
+        selector: "#telegramChannelLink",
+        readyText: "Ikuti informasi resmi MAGNUM188",
+        disabledText: "Channel Telegram sedang tidak tersedia."
+      },
       whatsapp_group: {
         selector: "#whatsappGroupLink",
         readyText: "Bergabung melalui WhatsApp",
@@ -578,24 +593,24 @@
         if (enableService(key, data && data[key])) active += 1;
       });
 
-      document.getElementById("availableCount").textContent = active + "/3";
-      document.getElementById("statusText").textContent = active === 3
-        ? "Semua grup tersedia"
+      document.getElementById("availableCount").textContent = active + "/4";
+      document.getElementById("statusText").textContent = active === 4
+        ? "Semua channel dan grup tersedia"
         : active > 0
-          ? "Sebagian grup sedang tidak tersedia"
-          : "Semua grup sedang tidak tersedia";
+          ? "Sebagian channel atau grup sedang tidak tersedia"
+          : "Semua channel dan grup sedang tidak tersedia";
     }
 
     async function fetchContacts() {
       setLoading(true);
-      document.getElementById("statusText").textContent = "Memeriksa ketersediaan grup...";
+      document.getElementById("statusText").textContent = "Memeriksa ketersediaan komunitas...";
       try {
         var response = await fetch("/api/contacts", { cache: "no-store" });
         if (!response.ok) throw new Error("Gagal membaca grup");
         applyServices(await response.json());
       } catch (_) {
         applyServices(null);
-        document.getElementById("statusText").textContent = "Gagal membaca ketersediaan grup";
+        document.getElementById("statusText").textContent = "Gagal membaca ketersediaan komunitas";
       } finally {
         setLoading(false);
       }
@@ -620,7 +635,7 @@
       var link = event.target.closest(".group-link.disabled");
       if (!link) return;
       event.preventDefault();
-      alert(link.dataset.disabledMessage || "Grup sedang tidak tersedia.");
+      alert(link.dataset.disabledMessage || "Layanan sedang tidak tersedia.");
     });
 
     fetchContacts();

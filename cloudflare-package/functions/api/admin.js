@@ -5,6 +5,7 @@ const CHANNELS = [
   "whatsapp_group",
   "telegram_group",
   "facebook_group",
+  "alternative",
 ];
 
 const ALLOWED_HOSTS = {
@@ -14,6 +15,16 @@ const ALLOWED_HOSTS = {
   whatsapp_group: new Set(["chat.whatsapp.com", "pasticuan.me", "www.pasticuan.me"]),
   telegram_group: new Set(["t.me", "telegram.me", "pasticuan.me", "www.pasticuan.me"]),
   facebook_group: new Set(["facebook.com", "www.facebook.com", "pasticuan.me", "www.pasticuan.me"]),
+  alternative: new Set([
+    "pasticuan.me",
+    "www.pasticuan.me",
+    "shrtl.sbs",
+    "www.shrtl.sbs",
+    "livemagnum188.chat",
+    "www.livemagnum188.chat",
+    "heylink.me",
+    "www.heylink.me",
+  ]),
 };
 
 const COOKIE_NAME = "magnum_admin_session";
@@ -201,7 +212,9 @@ async function handleGetContacts(context) {
   CHANNELS.forEach((channel, index) => {
     contacts[channel] = {
       url: links[index] || "",
-      active: statuses[index] !== "inactive",
+      active: statuses[index]
+        ? statuses[index] !== "inactive"
+        : Boolean(links[index]),
     };
   });
 
