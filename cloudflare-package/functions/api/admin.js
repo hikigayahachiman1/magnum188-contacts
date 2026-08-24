@@ -29,8 +29,11 @@ const ALLOWED_HOSTS = {
   ]),
 };
 
-const COOKIE_NAME = "magnum_admin_session";
-const SESSION_SECONDS = 8 * 60 * 60;
+const COOKIE_NAME = "__Host-magnum_admin_session";
+const SESSION_SECONDS = 2 * 60 * 60;
+const MAX_BODY_BYTES = 16 * 1024;
+const MAX_PASSWORD_CHARS = 256;
+const MAX_URL_CHARS = 2048;
 const encoder = new TextEncoder();
 
 function json(data, status = 200, extraHeaders = {}) {
@@ -41,6 +44,11 @@ function json(data, status = 200, extraHeaders = {}) {
       "Cache-Control": "no-store, no-cache, must-revalidate",
       "X-Content-Type-Options": "nosniff",
       "Referrer-Policy": "no-referrer",
+      "X-Frame-Options": "DENY",
+      "Cross-Origin-Opener-Policy": "same-origin",
+      "Cross-Origin-Resource-Policy": "same-origin",
+      "Permissions-Policy": "camera=(), microphone=(), geolocation=(), payment=(), usb=()",
+      "Content-Security-Policy": "default-src 'none'; frame-ancestors 'none'; base-uri 'none'",
       ...extraHeaders,
     },
   });
@@ -74,8 +82,12 @@ async function importSigningKey(secret) {
 }
 
 async function createSession(secret) {
+  const nonce = crypto.getRandomValues(new Uint8Array(24));
   const payload = stringToBase64Url(
-    JSON.stringify({ exp: Math.floor(Date.now() / 1000) + SESSION_SECONDS }),
+    JSON.stringify({
+      exp: Math.floor(Date.now() / 1000) + SESSION_SECONDS,
+      jti: bytesToBase64Url(nonce),
+    }),
   );
   const key = await importSigningKey(secret);
   const signature = await crypto.subtle.sign("HMAC", key, encoder.encode(payload));
@@ -84,7 +96,9 @@ async function createSession(secret) {
 
 async function verifySession(token, secret) {
   try {
-    const [payload, signature] = String(token || "").split(".");
+    const parts = String(token || "").split(".");
+    if (parts.length !== 2) return false;
+    const [payload, signature] = parts;
     if (!payload || !signature) return false;
     const key = await importSigningKey(secret);
     const valid = await crypto.subtle.verify(
@@ -95,7 +109,11 @@ async function verifySession(token, secret) {
     );
     if (!valid) return false;
     const data = JSON.parse(new TextDecoder().decode(base64UrlToBytes(payload)));
-    return Number(data.exp) > Math.floor(Date.now() / 1000);
+    return (
+      Number(data.exp) > Math.floor(Date.now() / 1000) &&
+      typeof data.jti === "string" &&
+      data.jti.length >= 32
+    );
   } catch {
     return false;
   }
@@ -131,9 +149,45 @@ function isSameOrigin(request) {
   return origin === new URL(request.url).origin;
 }
 
+function isJsonRequest(request) {
+  const type = String(request.headers.get("Content-Type") || "").toLowerCase();
+  return type.startsWith("application/json");
+}
+
+function bodyIsTooLarge(request) {
+  const length = Number(request.headers.get("Content-Length") || "0");
+  return Number.isFinite(length) && length > MAX_BODY_BYTES;
+}
+
+async function readJsonBody(request) {
+  if (!isJsonRequest(request)) {
+    return { response: json({ ok: false, error: "CONTENT_TYPE_DITOLAK" }, 415) };
+  }
+  if (bodyIsTooLarge(request)) {
+    return { response: json({ ok: false, error: "DATA_TERLALU_BESAR" }, 413) };
+  }
+
+  let raw;
+  try {
+    raw = await request.text();
+  } catch {
+    return { response: json({ ok: false, error: "DATA_TIDAK_VALID" }, 400) };
+  }
+  if (encoder.encode(raw).byteLength > MAX_BODY_BYTES) {
+    return { response: json({ ok: false, error: "DATA_TERLALU_BESAR" }, 413) };
+  }
+
+  try {
+    return { data: JSON.parse(raw) };
+  } catch {
+    return { response: json({ ok: false, error: "DATA_TIDAK_VALID" }, 400) };
+  }
+}
+
 function validateTarget(channel, value) {
   const target = String(value || "").trim();
   if (!target) return { ok: true, value: "" };
+  if (target.length > MAX_URL_CHARS) return { ok: false };
 
   try {
     const url = new URL(target);
@@ -166,7 +220,6 @@ async function handleLogin(context) {
   if (!isSameOrigin(context.request)) {
     return json({ ok: false, error: "ORIGIN_DITOLAK" }, 403);
   }
-
   const key = await attemptKey(context.request);
   const attempts = Number((await context.env.CONTACTS.get(key)) || "0");
   if (attempts >= 5) {
@@ -176,14 +229,16 @@ async function handleLogin(context) {
     );
   }
 
-  let body;
-  try {
-    body = await context.request.json();
-  } catch {
+  const parsed = await readJsonBody(context.request);
+  if (parsed.response) return parsed.response;
+  const body = parsed.data;
+
+  const password = String(body.password || "");
+  if (!password || password.length > MAX_PASSWORD_CHARS) {
     return json({ ok: false, error: "DATA_TIDAK_VALID" }, 400);
   }
 
-  if (!(await equalSecret(body.password || "", context.env.ADMIN_PASSWORD))) {
+  if (!(await equalSecret(password, context.env.ADMIN_PASSWORD))) {
     await context.env.CONTACTS.put(key, String(attempts + 1), { expirationTtl: 900 });
     return json({ ok: false, error: "LOGIN_GAGAL", message: "Password admin salah." }, 401);
   }
@@ -194,7 +249,7 @@ async function handleLogin(context) {
     { ok: true },
     200,
     {
-      "Set-Cookie": `${COOKIE_NAME}=${session}; Path=/; Max-Age=${SESSION_SECONDS}; HttpOnly; Secure; SameSite=Strict`,
+      "Set-Cookie": `${COOKIE_NAME}=${session}; Path=/; Max-Age=${SESSION_SECONDS}; HttpOnly; Secure; SameSite=Strict; Priority=High`,
     },
   );
 }
@@ -230,13 +285,9 @@ async function handleSave(context) {
   if (!(await requireAdmin(context))) {
     return json({ ok: false, error: "BELUM_LOGIN" }, 401);
   }
-
-  let body;
-  try {
-    body = await context.request.json();
-  } catch {
-    return json({ ok: false, error: "DATA_TIDAK_VALID" }, 400);
-  }
+  const parsed = await readJsonBody(context.request);
+  if (parsed.response) return parsed.response;
+  const body = parsed.data;
 
   const incoming = body && body.contacts;
   if (!incoming || typeof incoming !== "object") {
@@ -292,7 +343,7 @@ async function handleLogout(context) {
     { ok: true },
     200,
     {
-      "Set-Cookie": `${COOKIE_NAME}=; Path=/; Max-Age=0; HttpOnly; Secure; SameSite=Strict`,
+      "Set-Cookie": `${COOKIE_NAME}=; Path=/; Max-Age=0; HttpOnly; Secure; SameSite=Strict; Priority=High`,
     },
   );
 }

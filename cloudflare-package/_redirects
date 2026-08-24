@@ -1,0 +1,4 @@
+/admin.php /admin.php/ 301
+/admin.php/* /admin/:splat 200
+/admin /admin.php/ 301
+/admin/* /admin.php/:splat 301

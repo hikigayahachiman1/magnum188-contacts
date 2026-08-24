@@ -2,7 +2,7 @@
 
 Paket ini menggunakan Cloudflare Pages Functions dan KV. Link asli tidak
 ditulis di `index.html`. Admin dapat mengganti link serta status kontak melalui
-halaman `/admin/` tanpa membuka menu KV secara manual.
+halaman `/admin.php/` tanpa membuka menu KV secara manual.
 
 ## Isi paket
 
@@ -11,12 +11,14 @@ halaman `/admin/` tanpa membuka menu KV secara manual.
   bagian header, ikon SVG, dan badge tombol grup.
 - `groupm188/index.html`: halaman khusus Channel Telegram serta grup resmi
   WhatsApp, Telegram, dan Facebook yang dapat dibuka melalui `/groupm188/`.
-- `admin/index.html`: panel admin untuk edit link dan status.
+- `admin/index.html`: sumber panel admin yang ditampilkan melalui `/admin.php/`.
 - `functions/api/admin.js`: login, logout, baca, dan simpan konfigurasi.
 - `functions/api/contacts.js`: memberikan alias kontak aktif kepada halaman publik.
 - `functions/api/duration.js`: interval pembaruan kontak 30 detik.
 - `functions/go/[channel].js`: redirect aman berdasarkan daftar domain yang diizinkan.
 - `_headers`: aturan no-cache, noindex, dan keamanan halaman admin.
+- `_redirects`: menyediakan alamat `/admin.php/` tanpa membutuhkan server PHP
+  dan mengalihkan alamat `/admin/` lama ke alamat baru.
 
 ## Struktur GitHub
 
@@ -28,6 +30,7 @@ repository/
 └── cloudflare-package/
     ├── index.html
     ├── _headers
+    ├── _redirects
     ├── groupm188/
     │   └── index.html
     ├── admin/
@@ -72,11 +75,16 @@ menambahkan binding/secret, lakukan deployment baru.
 
 ## Menggunakan panel
 
-1. Buka `https://livemagnum188.chat/admin/`.
+1. Buka `https://livemagnum188.chat/admin.php/`.
 2. Login menggunakan nilai `ADMIN_PASSWORD`.
 3. Ganti link atau ubah tombol Aktif/Nonaktif.
 4. Gunakan tombol Tes untuk memeriksa link.
 5. Klik Simpan Perubahan.
+
+`admin.php` pada alamat tersebut adalah nama jalur yang diproksikan secara
+internal oleh Cloudflare Pages. Ini bukan file PHP tradisional karena Pages
+Functions berjalan pada Workers runtime. Login dan penyimpanan tetap diproses
+di server melalui `/api/admin`.
 
 Perubahan untuk `Channel Telegram`, `Grup WhatsApp`, `Grup Telegram`, dan
 `Grup Facebook` juga otomatis digunakan oleh halaman
@@ -107,20 +115,37 @@ open redirect menuju domain sembarangan.
 
 ## Pengujian
 
-- `/admin/` harus menampilkan login.
+- `/admin.php/` harus menampilkan login dan `/admin/` harus dialihkan ke sana.
 - Password salah lima kali akan diblokir selama 15 menit untuk alamat IP itu.
 - `/api/contacts` hanya menampilkan `/go/...`, bukan link asli.
 - Kontak nonaktif harus menghilang/nonaktif pada halaman publik.
 - `/go/<channel>` untuk kontak nonaktif harus menghasilkan pesan penolakan.
 - `/go/alternative` hanya mengarahkan ke domain alternatif yang diizinkan.
-- Sesi admin berakhir otomatis setelah 8 jam.
+- Sesi admin berakhir otomatis setelah 2 jam.
 
 ## Catatan keamanan
 
 - Cookie sesi ditandatangani HMAC dan memakai `HttpOnly`, `Secure`, dan
-  `SameSite=Strict`.
+- Nama cookie memakai prefix `__Host-`, sesi maksimum 2 jam, dan setiap sesi
+  memiliki ID acak yang berbeda.
 - Request perubahan hanya diterima dari origin website yang sama.
+- Request login/simpan harus menggunakan JSON, ukuran request dibatasi, dan URL
+  tujuan dibatasi maksimal 2.048 karakter.
 - Halaman admin diberi `noindex` dan tidak dihubungkan dari halaman publik.
 - Tidak ada sistem yang dapat menyembunyikan URL tujuan setelah pengguna benar-
   benar mengikuti redirect; penyembunyian hanya mencegah URL mentah tertulis di
   source halaman publik.
+
+## Proteksi Cloudflare Access — sangat dianjurkan
+
+Password panel adalah lapisan kedua. Untuk perlindungan utama, buat aplikasi
+Self-hosted pada Cloudflare Zero Trust dan izinkan hanya email admin Anda:
+
+1. Lindungi `livemagnum188.chat/admin.php/*`.
+2. Lindungi `livemagnum188.chat/api/admin*` dengan kebijakan yang sama.
+3. Gunakan login email OTP atau akun Google yang sudah memakai MFA.
+4. Gunakan durasi sesi Access 1 jam.
+5. Jangan membuat kebijakan `Bypass` untuk kedua jalur tersebut.
+
+Dengan konfigurasi tersebut, orang lain harus melewati Cloudflare Access lebih
+dahulu sebelum halaman password panel atau API admin dapat dijangkau.
