@@ -9,6 +9,28 @@ const CHANNELS = [
   "alternative",
 ];
 
+const DEFAULT_DISPLAY_ORDER = [
+  "whatsapp",
+  "telegram",
+  "telegram_channel",
+  "livechat",
+  "whatsapp_group",
+  "telegram_group",
+  "facebook_group",
+];
+const DISPLAY_ORDER_KEY = "display:order";
+const DEFAULT_LABELS = {
+  whatsapp: "WhatsApp Official",
+  telegram: "Telegram Official",
+  telegram_channel: "Channel Telegram Official",
+  livechat: "LiveChat Official",
+  whatsapp_group: "Grup WhatsApp Official",
+  telegram_group: "Grup Telegram Official",
+  facebook_group: "Grup Facebook Official",
+  alternative: "LINK ALTERNATIF",
+};
+const MAX_LABEL_CHARS = 60;
+
 const ALLOWED_HOSTS = {
   whatsapp: new Set(["api.whatsapp.com", "wa.me", "pasticuan.me", "www.pasticuan.me"]),
   telegram: new Set(["t.me", "telegram.me", "pasticuan.me", "www.pasticuan.me"]),
@@ -202,6 +224,33 @@ function validateTarget(channel, value) {
   }
 }
 
+function validateDisplayOrder(value) {
+  if (!Array.isArray(value) || value.length !== DEFAULT_DISPLAY_ORDER.length) return null;
+  const allowed = new Set(DEFAULT_DISPLAY_ORDER);
+  const unique = new Set(value);
+  if (unique.size !== DEFAULT_DISPLAY_ORDER.length) return null;
+  if (value.some((channel) => typeof channel !== "string" || !allowed.has(channel))) return null;
+  return [...value];
+}
+
+function parseStoredDisplayOrder(value) {
+  if (!value) return [...DEFAULT_DISPLAY_ORDER];
+  try {
+    return validateDisplayOrder(JSON.parse(value)) || [...DEFAULT_DISPLAY_ORDER];
+  } catch {
+    return [...DEFAULT_DISPLAY_ORDER];
+  }
+}
+
+function validateLabel(channel, value) {
+  if (value === undefined || value === null || String(value).trim() === "") {
+    return { ok: true, value: DEFAULT_LABELS[channel] };
+  }
+  const label = String(value).replace(/\s+/g, " ").trim();
+  if (label.length > MAX_LABEL_CHARS || /[<>\u0000-\u001f\u007f\u202a-\u202e\u2066-\u2069]/i.test(label)) return { ok: false };
+  return { ok: true, value: label };
+}
+
 function clientAddress(request) {
   return request.headers.get("CF-Connecting-IP") || "unknown";
 }
@@ -259,10 +308,12 @@ async function handleGetContacts(context) {
     return json({ ok: false, error: "BELUM_LOGIN" }, 401);
   }
 
-  const [links, statuses, updatedAt] = await Promise.all([
+  const [links, statuses, labels, updatedAt, storedOrder] = await Promise.all([
     Promise.all(CHANNELS.map((channel) => context.env.CONTACTS.get(channel))),
     Promise.all(CHANNELS.map((channel) => context.env.CONTACTS.get(`status:${channel}`))),
+    Promise.all(CHANNELS.map((channel) => context.env.CONTACTS.get(`label:${channel}`))),
     context.env.CONTACTS.get("admin:updated_at"),
+    context.env.CONTACTS.get(DISPLAY_ORDER_KEY),
   ]);
 
   const contacts = {};
@@ -272,10 +323,16 @@ async function handleGetContacts(context) {
       active: statuses[index]
         ? statuses[index] !== "inactive"
         : Boolean(links[index]),
+      label: labels[index] || DEFAULT_LABELS[channel],
     };
   });
 
-  return json({ ok: true, contacts, updatedAt: updatedAt || null });
+  return json({
+    ok: true,
+    contacts,
+    order: parseStoredDisplayOrder(storedOrder),
+    updatedAt: updatedAt || null,
+  });
 }
 
 async function handleSave(context) {
@@ -292,6 +349,16 @@ async function handleSave(context) {
   const incoming = body && body.contacts;
   if (!incoming || typeof incoming !== "object") {
     return json({ ok: false, error: "DATA_TIDAK_LENGKAP" }, 400);
+  }
+
+  let displayOrder;
+  if (Object.prototype.hasOwnProperty.call(body, "order")) {
+    displayOrder = validateDisplayOrder(body.order);
+    if (!displayOrder) {
+      return json({ ok: false, error: "URUTAN_TIDAK_VALID", message: "Urutan link tidak valid." }, 400);
+    }
+  } else {
+    displayOrder = parseStoredDisplayOrder(await context.env.CONTACTS.get(DISPLAY_ORDER_KEY));
   }
 
   const clean = {};
@@ -313,7 +380,14 @@ async function handleSave(context) {
         400,
       );
     }
-    clean[channel] = { url: checked.value, active: item.active };
+    const checkedLabel = validateLabel(channel, item.label);
+    if (!checkedLabel.ok) {
+      return json(
+        { ok: false, error: "NAMA_TIDAK_VALID", channel, message: `Nama ${channel} tidak valid atau terlalu panjang.` },
+        400,
+      );
+    }
+    clean[channel] = { url: checked.value, active: item.active, label: checkedLabel.value };
   }
 
   const updatedAt = new Date().toISOString();
@@ -328,8 +402,10 @@ async function handleSave(context) {
     writes.push(
       context.env.CONTACTS.put(`status:${channel}`, item.active ? "active" : "inactive"),
     );
+    writes.push(context.env.CONTACTS.put(`label:${channel}`, item.label));
   }
   writes.push(context.env.CONTACTS.put("admin:updated_at", updatedAt));
+  writes.push(context.env.CONTACTS.put(DISPLAY_ORDER_KEY, JSON.stringify(displayOrder)));
   await Promise.all(writes);
 
   return json({ ok: true, updatedAt });

@@ -1123,6 +1123,44 @@
             }
         };
 
+        var defaultDisplayOrder = [
+            'whatsapp', 'telegram', 'telegram_channel', 'livechat',
+            'whatsapp_group', 'telegram_group', 'facebook_group'
+        ];
+
+        function applyDisplayOrder(order) {
+            var container = document.querySelector('main.links');
+            if (!container) return;
+            var clean = Array.isArray(order)
+                ? order.filter(function (key, index) {
+                    return defaultDisplayOrder.indexOf(key) !== -1 && order.indexOf(key) === index;
+                })
+                : [];
+            defaultDisplayOrder.forEach(function (key) {
+                if (clean.indexOf(key) === -1) clean.push(key);
+            });
+            clean.forEach(function (key) {
+                var cfg = services[key];
+                var link = cfg && document.querySelector(cfg.selector);
+                if (link) container.appendChild(link);
+            });
+        }
+
+        function applyLabels(labels) {
+            if (!labels || typeof labels !== 'object') return;
+            Object.keys(services).forEach(function (key) {
+                var label = typeof labels[key] === 'string' ? labels[key].trim() : '';
+                if (!label) return;
+                var cfg = services[key];
+                var link = cfg && document.querySelector(cfg.selector);
+                if (!link) return;
+                var target = key === 'alternative'
+                    ? link.querySelector('span')
+                    : link.querySelector('.label strong');
+                if (target) target.textContent = label;
+            });
+        }
+
         function setStatus(state, text) {
             var dot = document.getElementById('statusDot');
             var label = document.getElementById('statusText');
@@ -1180,6 +1218,9 @@
         function applyServices(data) {
             var total = Object.keys(services).length;
             var active = 0;
+
+            applyDisplayOrder(data && data.order);
+            applyLabels(data && data.labels);
 
             Object.keys(services).forEach(function (key) {
                 if (enableService(key, data ? data[key] : null)) active++;

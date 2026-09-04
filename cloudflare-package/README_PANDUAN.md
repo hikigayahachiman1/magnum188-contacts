@@ -1,8 +1,8 @@
 # MAGNUM188 — Kontak Resmi + Panel Admin
 
 Paket ini menggunakan Cloudflare Pages Functions dan KV. Link asli tidak
-ditulis di `index.html`. Admin dapat mengganti link serta status kontak melalui
-halaman `/admin.php/` tanpa membuka menu KV secara manual.
+ditulis di `index.html`. Admin dapat mengganti link, nama tampilan, status, dan
+urutan tombol melalui halaman `/admin.php/` tanpa membuka menu KV secara manual.
 
 ## Isi paket
 
@@ -77,9 +77,15 @@ menambahkan binding/secret, lakukan deployment baru.
 
 1. Buka `https://livemagnum188.chat/admin.php/`.
 2. Login menggunakan nilai `ADMIN_PASSWORD`.
-3. Ganti link atau ubah tombol Aktif/Nonaktif.
-4. Gunakan tombol Tes untuk memeriksa link.
-5. Klik Simpan Perubahan.
+3. Ganti **Nama tampilan tombol** bila diperlukan.
+4. Ganti link atau ubah tombol Aktif/Nonaktif.
+5. Susun urutan dengan menggeser nomor kartu atau tombol panah ↑ dan ↓.
+6. Gunakan tombol Tes untuk memeriksa link.
+7. Klik Simpan Perubahan.
+
+Urutan berlaku untuk tujuh tombol layanan pada halaman utama. Link Alternatif
+tetap berada di kanan atas karena memakai posisi header khusus. Halaman
+`/groupm188/` otomatis mengikuti urutan relatif dari empat tombol komunitas.
 
 `admin.php` pada alamat tersebut adalah nama jalur yang diproksikan secara
 internal oleh Cloudflare Pages. Ini bukan file PHP tradisional karena Pages
@@ -97,6 +103,10 @@ Panel menyimpan link ke key (`whatsapp`, `telegram`, `telegram_channel`,
 tetap kompatibel: link lama yang sudah terisi dianggap aktif, sedangkan Channel
 Telegram dan Link Alternatif baru yang masih kosong dimulai dalam keadaan
 nonaktif.
+
+Nama tampilan disimpan ke `label:<channel>` dan urutan disimpan sebagai JSON ke
+`display:order`. Nama maksimal 60 karakter dan selalu ditampilkan sebagai teks
+biasa; HTML, tag script, karakter kontrol, serta tanda `<` dan `>` ditolak.
 
 ## Domain tujuan yang diizinkan
 

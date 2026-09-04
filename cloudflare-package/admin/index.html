@@ -150,9 +150,48 @@
     }
 
     .contact-card.inactive { opacity: .72; border-color: rgba(255, 255, 255, .07); }
+    .contact-card.dragging { opacity: .45; border-color: rgba(243, 208, 108, .7); }
+    .contact-card.drag-over { border-color: var(--gold); box-shadow: 0 0 0 2px rgba(243, 208, 108, .12); }
 
     .card-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 13px; }
     .service { display: flex; align-items: center; gap: 10px; min-width: 0; }
+    .card-actions { display: flex; align-items: center; gap: 8px; }
+    .order-controls { display: flex; align-items: center; gap: 5px; }
+    .order-number {
+      display: grid;
+      place-items: center;
+      min-width: 27px;
+      height: 27px;
+      border: 1px solid rgba(243, 208, 108, .25);
+      border-radius: 9px;
+      color: var(--gold);
+      background: rgba(243, 208, 108, .07);
+      font-size: 11px;
+      font-weight: 900;
+    }
+    .order-button {
+      min-width: 29px;
+      min-height: 29px;
+      padding: 0;
+      border-color: var(--line);
+      color: #e9dcae;
+      background: rgba(255,255,255,.045);
+      font-size: 15px;
+      line-height: 1;
+    }
+    .order-button:disabled { opacity: .3; cursor: not-allowed; }
+    .drag-handle { cursor: grab; user-select: none; }
+    .drag-handle:active { cursor: grabbing; }
+    .order-help {
+      margin: -7px 0 15px;
+      padding: 11px 13px;
+      border: 1px solid rgba(243, 208, 108, .16);
+      border-radius: 12px;
+      color: #c9bfc0;
+      background: rgba(243, 208, 108, .045);
+      font-size: 12px;
+      line-height: 1.5;
+    }
 
     .service-icon {
       display: grid;
@@ -179,6 +218,8 @@
 
     .url-row { display: grid; grid-template-columns: 1fr auto; gap: 8px; }
     .test-button { min-width: 68px; padding: 0 12px; color: var(--gold); background: rgba(243, 208, 108, .08); border-color: rgba(243, 208, 108, .22); }
+    .name-field { margin-bottom: 10px; }
+    .name-label { display: block; margin: 0 2px 6px; color: #b9adaf; font-size: 11px; font-weight: 700; }
 
     .allowed { margin: 8px 2px 0; color: #8e8284; font-size: 10px; line-height: 1.4; }
 
@@ -225,6 +266,8 @@
       .dashboard-head, .footer-actions { flex-direction: column; align-items: stretch; }
       .footer-buttons { display: grid; grid-template-columns: 1fr 1.5fr; }
       .topbar .subtitle { display: none; }
+      .card-head { align-items: flex-start; }
+      .card-actions { align-items: flex-end; flex-direction: column-reverse; }
     }
   </style>
 </head>
@@ -261,6 +304,7 @@
       </div>
 
       <form id="contactsForm">
+        <p class="order-help"><strong>Urutan tampilan:</strong> geser kartu atau gunakan tombol ↑ dan ↓. Link Alternatif tetap berada di kanan atas halaman utama.</p>
         <div id="contactsGrid" class="grid"></div>
         <div class="footer-actions">
           <div id="updatedText" class="updated">Belum ada informasi pembaruan.</div>
@@ -288,6 +332,7 @@
       { key: "facebook_group", label: "Grup Facebook", short: "FB", allowed: "facebook.com, pasticuan.me" },
       { key: "alternative", label: "Link Alternatif", short: "ALT", allowed: "pasticuan.me, shrtl.sbs, livemagnum188.chat, heylink.me" }
     ];
+    const defaultOrder = services.filter((service) => service.key !== "alternative").map((service) => service.key);
 
     const loginView = document.getElementById("loginView");
     const dashboardView = document.getElementById("dashboardView");
@@ -328,9 +373,96 @@
       return { response, data };
     }
 
-    function renderContacts(contacts) {
+    function normalizeOrder(order) {
+      if (!Array.isArray(order)) return [...defaultOrder];
+      const clean = order.filter((key, index) => defaultOrder.includes(key) && order.indexOf(key) === index);
+      for (const key of defaultOrder) if (!clean.includes(key)) clean.push(key);
+      return clean;
+    }
+
+    function syncOrderUI() {
+      const cards = [...contactsGrid.querySelectorAll('.contact-card[data-orderable="true"]')];
+      cards.forEach((card, index) => {
+        card.querySelector('[data-role="order-number"]').textContent = String(index + 1);
+        card.querySelector('[data-role="move-up"]').disabled = index === 0;
+        card.querySelector('[data-role="move-down"]').disabled = index === cards.length - 1;
+      });
+    }
+
+    function moveCard(card, direction) {
+      const cards = [...contactsGrid.querySelectorAll('.contact-card[data-orderable="true"]')];
+      const index = cards.indexOf(card);
+      const target = cards[index + direction];
+      if (!target) return;
+      if (direction < 0) contactsGrid.insertBefore(card, target);
+      else contactsGrid.insertBefore(target, card);
+      syncOrderUI();
+    }
+
+    function addOrderControls(card, service) {
+      const controls = document.createElement("div");
+      controls.className = "order-controls";
+
+      const number = document.createElement("span");
+      number.className = "order-number drag-handle";
+      number.dataset.role = "order-number";
+      number.title = "Pegang untuk menggeser urutan";
+      number.draggable = true;
+
+      const up = document.createElement("button");
+      up.className = "order-button";
+      up.type = "button";
+      up.textContent = "↑";
+      up.dataset.role = "move-up";
+      up.title = `Naikkan ${service.label}`;
+      up.setAttribute("aria-label", `Naikkan urutan ${service.label}`);
+      up.addEventListener("click", () => moveCard(card, -1));
+
+      const down = document.createElement("button");
+      down.className = "order-button";
+      down.type = "button";
+      down.textContent = "↓";
+      down.dataset.role = "move-down";
+      down.title = `Turunkan ${service.label}`;
+      down.setAttribute("aria-label", `Turunkan urutan ${service.label}`);
+      down.addEventListener("click", () => moveCard(card, 1));
+
+      controls.append(number, up, down);
+      card.dataset.orderable = "true";
+      number.addEventListener("dragstart", (event) => {
+        card.classList.add("dragging");
+        event.dataTransfer.effectAllowed = "move";
+        event.dataTransfer.setData("text/plain", service.key);
+      });
+      number.addEventListener("dragend", () => {
+        card.classList.remove("dragging");
+        contactsGrid.querySelectorAll(".drag-over").forEach((item) => item.classList.remove("drag-over"));
+        syncOrderUI();
+      });
+      card.addEventListener("dragover", (event) => {
+        event.preventDefault();
+        if (!card.classList.contains("dragging")) card.classList.add("drag-over");
+      });
+      card.addEventListener("dragleave", () => card.classList.remove("drag-over"));
+      card.addEventListener("drop", (event) => {
+        event.preventDefault();
+        card.classList.remove("drag-over");
+        const dragged = contactsGrid.querySelector(".contact-card.dragging");
+        if (!dragged || dragged === card) return;
+        const cards = [...contactsGrid.querySelectorAll('.contact-card[data-orderable="true"]')];
+        if (cards.indexOf(dragged) < cards.indexOf(card)) card.after(dragged);
+        else contactsGrid.insertBefore(dragged, card);
+        syncOrderUI();
+      });
+      return controls;
+    }
+
+    function renderContacts(contacts, order) {
       contactsGrid.textContent = "";
-      for (const service of services) {
+      const orderedKeys = normalizeOrder(order);
+      const orderedServices = orderedKeys.map((key) => services.find((service) => service.key === key));
+      orderedServices.push(services.find((service) => service.key === "alternative"));
+      for (const service of orderedServices) {
         const value = contacts[service.key] || { url: "", active: false };
         const card = document.createElement("article");
         card.className = `contact-card${value.active ? "" : " inactive"}`;
@@ -355,7 +487,28 @@
         const slider = document.createElement("span");
         slider.className = "slider";
         switchLabel.append(toggle, slider);
-        head.appendChild(switchLabel);
+        const actions = document.createElement("div");
+        actions.className = "card-actions";
+        if (service.key !== "alternative") actions.appendChild(addOrderControls(card, service));
+        actions.appendChild(switchLabel);
+        head.appendChild(actions);
+
+        const nameField = document.createElement("div");
+        nameField.className = "name-field";
+        const nameLabel = document.createElement("label");
+        nameLabel.className = "name-label";
+        nameLabel.textContent = "Nama tampilan tombol";
+        const nameInput = document.createElement("input");
+        nameInput.type = "text";
+        nameInput.value = value.label || service.label;
+        nameInput.maxLength = 60;
+        nameInput.autocomplete = "off";
+        nameInput.spellcheck = false;
+        nameInput.dataset.role = "label";
+        nameInput.placeholder = service.label;
+        nameInput.setAttribute("aria-label", `Nama tampilan ${service.label}`);
+        nameLabel.appendChild(nameInput);
+        nameField.appendChild(nameLabel);
 
         const row = document.createElement("div");
         row.className = "url-row";
@@ -393,9 +546,10 @@
           card.querySelector(".status-text").textContent = toggle.checked ? "Aktif" : "Nonaktif";
         });
 
-        card.append(head, row, allowed);
+        card.append(head, nameField, row, allowed);
         contactsGrid.appendChild(card);
       }
+      syncOrderUI();
     }
 
     function updateTimestamp(value) {
@@ -416,7 +570,7 @@
           return;
         }
         if (!response.ok) throw new Error(data.message || "Panel admin belum dikonfigurasi.");
-        renderContacts(data.contacts || {});
+        renderContacts(data.contacts || {}, data.order);
         updateTimestamp(data.updatedAt);
         setView(true);
         if (showMessage) showToast("Data terbaru berhasil dimuat.");
@@ -455,16 +609,19 @@
       for (const card of contactsGrid.querySelectorAll(".contact-card")) {
         contacts[card.dataset.key] = {
           url: card.querySelector('[data-role="url"]').value.trim(),
-          active: card.querySelector('[data-role="active"]').checked
+          active: card.querySelector('[data-role="active"]').checked,
+          label: card.querySelector('[data-role="label"]').value.trim()
         };
       }
+      const order = [...contactsGrid.querySelectorAll('.contact-card[data-orderable="true"]')]
+        .map((card) => card.dataset.key);
 
       saveButton.disabled = true;
       try {
         const { response, data } = await api("save", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ contacts })
+          body: JSON.stringify({ contacts, order })
         });
         if (response.status === 401) {
           setView(false);

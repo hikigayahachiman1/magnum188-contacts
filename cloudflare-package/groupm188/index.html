@@ -549,6 +549,37 @@
       }
     };
 
+    var communityOrder = ["telegram_channel", "whatsapp_group", "telegram_group", "facebook_group"];
+
+    function applyDisplayOrder(order) {
+      var container = document.querySelector(".groups");
+      if (!container) return;
+      var clean = Array.isArray(order)
+        ? order.filter(function (key, index) {
+            return communityOrder.indexOf(key) !== -1 && order.indexOf(key) === index;
+          })
+        : [];
+      communityOrder.forEach(function (key) {
+        if (clean.indexOf(key) === -1) clean.push(key);
+      });
+      clean.forEach(function (key) {
+        var cfg = services[key];
+        var link = cfg && document.querySelector(cfg.selector);
+        if (link) container.appendChild(link);
+      });
+    }
+
+    function applyLabels(labels) {
+      if (!labels || typeof labels !== "object") return;
+      Object.keys(services).forEach(function (key) {
+        var label = typeof labels[key] === "string" ? labels[key].trim() : "";
+        var cfg = services[key];
+        var link = cfg && document.querySelector(cfg.selector);
+        var target = link && link.querySelector(".label strong");
+        if (target && label) target.textContent = label;
+      });
+    }
+
     function setLoading(loading) {
       var dot = document.getElementById("statusDot");
       if (dot) dot.classList.toggle("loading", loading);
@@ -589,6 +620,8 @@
 
     function applyServices(data) {
       var active = 0;
+      applyDisplayOrder(data && data.order);
+      applyLabels(data && data.labels);
       Object.keys(services).forEach(function (key) {
         if (enableService(key, data && data[key])) active += 1;
       });
