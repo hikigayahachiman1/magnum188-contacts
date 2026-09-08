@@ -1,8 +1,9 @@
 # MAGNUM188 — Kontak Resmi + Panel Admin
 
 Paket ini menggunakan Cloudflare Pages Functions dan KV. Link asli tidak
-ditulis di `index.html`. Admin dapat mengganti link, nama tampilan, status, dan
-urutan tombol melalui halaman `/admin.php/` tanpa membuka menu KV secara manual.
+ditulis di `index.html`. Admin dapat mengganti link, nama tampilan, status,
+urutan tombol, serta membuat folder laci pilihan link melalui halaman
+`/admin.php/` tanpa membuka menu KV secara manual.
 
 ## Isi paket
 
@@ -16,6 +17,7 @@ urutan tombol melalui halaman `/admin.php/` tanpa membuka menu KV secara manual.
 - `functions/api/contacts.js`: memberikan alias kontak aktif kepada halaman publik.
 - `functions/api/duration.js`: interval pembaruan kontak 30 detik.
 - `functions/go/[channel].js`: redirect aman berdasarkan daftar domain yang diizinkan.
+- `functions/go/[channel]/[item].js`: redirect aman untuk setiap link di dalam laci.
 - `_headers`: aturan no-cache, noindex, dan keamanan halaman admin.
 - `_redirects`: menyediakan alamat `/admin.php/` tanpa membutuhkan server PHP
   dan mengalihkan alamat `/admin/` lama ke alamat baru.
@@ -41,7 +43,9 @@ repository/
         │   ├── contacts.js
         │   └── duration.js
         └── go/
-            └── [channel].js
+            ├── [channel].js
+            └── [channel]/
+                └── [item].js
 ```
 
 Nama `[channel].js` termasuk tanda kurung siku dan tidak boleh diubah.
@@ -80,8 +84,13 @@ menambahkan binding/secret, lakukan deployment baru.
 3. Ganti **Nama tampilan tombol** bila diperlukan.
 4. Ganti link atau ubah tombol Aktif/Nonaktif.
 5. Susun urutan dengan menggeser nomor kartu atau tombol panah ↑ dan ↓.
-6. Gunakan tombol Tes untuk memeriksa link.
-7. Klik Simpan Perubahan.
+6. Pada **Saat tombol diklik**, pilih salah satu:
+   - **Buka link langsung** untuk satu tujuan.
+   - **Buka folder laci pilihan link** untuk beberapa pilihan.
+7. Di bagian **Isi Folder Laci**, tambah/hapus link, ubah nama dan URL, atur
+   status, serta susun urutan dengan tombol ↑ dan ↓.
+8. Gunakan tombol Tes untuk memeriksa setiap link.
+9. Klik Simpan Perubahan.
 
 Urutan berlaku untuk tujuh tombol layanan pada halaman utama. Link Alternatif
 tetap berada di kanan atas karena memakai posisi header khusus. Halaman
@@ -108,6 +117,18 @@ Nama tampilan disimpan ke `label:<channel>` dan urutan disimpan sebagai JSON ke
 `display:order`. Nama maksimal 60 karakter dan selalu ditampilkan sebagai teks
 biasa; HTML, tag script, karakter kontrol, serta tanda `<` dan `>` ditolak.
 
+Konfigurasi setiap folder laci disimpan ke `drawer:<channel>`. Pada pemasangan
+pertama, kartu **Grup Telegram** di panel disiapkan sebagai laci dengan dua item:
+`Grup Telegram Official 1` dan `Grup Telegram Official 2`. Link pertama memakai
+URL Grup Telegram lama agar data lama tidak hilang; isi URL kedua lalu aktifkan
+statusnya sebelum menyimpan. Tombol lain tetap link langsung, tetapi dapat
+diubah menjadi folder laci kapan saja melalui panel.
+
+Panel dapat menambah dan menghapus item secara bebas. Untuk mencegah request
+berlebihan atau penyalahgunaan, backend menerapkan batas teknis 50 item per
+laci. Hanya item aktif yang ditampilkan kepada member. Tombol induk yang aktif
+dan memakai mode laci wajib memiliki minimal satu item aktif.
+
 ## Domain tujuan yang diizinkan
 
 - WhatsApp: `wa.me`, `api.whatsapp.com`, `pasticuan.me`.
@@ -130,6 +151,8 @@ open redirect menuju domain sembarangan.
 - `/api/contacts` hanya menampilkan `/go/...`, bukan link asli.
 - Kontak nonaktif harus menghilang/nonaktif pada halaman publik.
 - `/go/<channel>` untuk kontak nonaktif harus menghasilkan pesan penolakan.
+- `/go/<channel>/<item>` hanya boleh membuka item laci aktif dengan domain yang
+  sesuai dengan jenis tombol induknya.
 - `/go/alternative` hanya mengarahkan ke domain alternatif yang diizinkan.
 - Sesi admin berakhir otomatis setelah 2 jam.
 
@@ -141,6 +164,8 @@ open redirect menuju domain sembarangan.
 - Request perubahan hanya diterima dari origin website yang sama.
 - Request login/simpan harus menggunakan JSON, ukuran request dibatasi, dan URL
   tujuan dibatasi maksimal 2.048 karakter.
+- Nama dan ID item laci divalidasi; URL asli anak laci tidak dikirim ke halaman
+  publik dan hanya diakses melalui redirect server.
 - Halaman admin diberi `noindex` dan tidak dihubungkan dari halaman publik.
 - Tidak ada sistem yang dapat menyembunyikan URL tujuan setelah pengguna benar-
   benar mengikuti redirect; penyembunyian hanya mencegah URL mentah tertulis di

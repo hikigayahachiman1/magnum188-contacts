@@ -839,6 +839,71 @@
 
         .pill { border-color: rgba(255,215,91,.14); background: rgba(255,215,91,.045); }
 
+        .drawer-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            display: grid;
+            place-items: center;
+            padding: 18px;
+            background: rgba(2, 2, 5, .78);
+            backdrop-filter: blur(9px);
+        }
+
+        .drawer-overlay[hidden] { display: none !important; }
+
+        .drawer-dialog {
+            width: min(470px, 100%);
+            max-height: min(680px, calc(100vh - 36px));
+            overflow: hidden;
+            border: 1px solid rgba(255, 217, 91, .32);
+            border-radius: 23px;
+            background: linear-gradient(155deg, #251014, #0d0c10 65%, #17100d);
+            box-shadow: 0 30px 90px rgba(0,0,0,.72), 0 0 45px rgba(239,41,56,.12);
+        }
+
+        .drawer-dialog-head {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 14px;
+            padding: 20px 20px 15px;
+            border-bottom: 1px solid rgba(255,255,255,.09);
+        }
+
+        .drawer-kicker { margin: 0 0 5px; color: var(--gold); font-size: 10px; font-weight: 900; letter-spacing: .12em; text-transform: uppercase; }
+        .drawer-dialog h2 { margin: 0; font-size: 18px; }
+        .drawer-close {
+            width: 36px;
+            height: 36px;
+            flex: 0 0 auto;
+            border: 1px solid rgba(255,255,255,.14);
+            border-radius: 12px;
+            color: #fff;
+            background: rgba(255,255,255,.06);
+            font-size: 22px;
+            cursor: pointer;
+        }
+
+        .drawer-options { display: grid; gap: 10px; max-height: 500px; overflow: auto; padding: 15px 20px 20px; }
+        .drawer-choice {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            min-height: 58px;
+            padding: 12px 14px;
+            border: 1px solid rgba(255,255,255,.13);
+            border-radius: 15px;
+            color: #fff;
+            text-decoration: none;
+            background: linear-gradient(110deg, rgba(255,255,255,.075), rgba(243,208,108,.045));
+            transition: transform .18s ease, border-color .18s ease, background .18s ease;
+        }
+        .drawer-choice:hover { transform: translateY(-2px); border-color: rgba(243,208,108,.5); background: rgba(243,208,108,.1); }
+        .drawer-choice strong { font-size: 13px; line-height: 1.35; }
+        .drawer-choice-arrow { color: var(--gold); font-size: 21px; }
+
         @media (max-width: 540px) {
             .brand {
                 display: grid;
@@ -1077,6 +1142,16 @@
             </div>
         </div>
     </div>
+
+    <div id="drawerOverlay" class="drawer-overlay" hidden>
+        <section class="drawer-dialog" role="dialog" aria-modal="true" aria-labelledby="drawerTitle">
+            <header class="drawer-dialog-head">
+                <div><p class="drawer-kicker">Pilih salah satu link resmi</p><h2 id="drawerTitle">Pilihan Link</h2></div>
+                <button id="drawerClose" class="drawer-close" type="button" aria-label="Tutup pilihan">×</button>
+            </header>
+            <div id="drawerOptions" class="drawer-options"></div>
+        </section>
+    </div>
     <script>
         var fetchInterval;
 
@@ -1184,6 +1259,8 @@
             if (!link) return;
             link.removeAttribute('href');
             link.classList.add('is-disabled');
+            link.classList.remove('has-drawer');
+            delete link.dataset.drawerKey;
             link.setAttribute('aria-disabled', 'true');
             link.setAttribute('title', cfg.disabledText);
             link.dataset.disabledMessage = cfg.disabledText;
@@ -1191,22 +1268,27 @@
             if (description) description.textContent = 'Sedang tidak tersedia / belum tersedia';
         }
 
-        function enableService(key, value) {
+        function enableService(key, value, drawer) {
             var cfg = services[key];
             if (!cfg) return false;
             value = (value || '').toString().trim();
             if (!value) { disableService(key); return false; }
 
             var url = String(value).trim();
-            if (!url || url.indexOf('/go/') !== 0) {
+            var isDrawer = url.indexOf('/drawer/') === 0 && drawer && drawer.enabled === true && Array.isArray(drawer.items) && drawer.items.length > 0;
+            var isDirect = url.indexOf('/go/') === 0;
+            if (!isDrawer && !isDirect) {
                 disableService(key);
                 return false;
             }
 
             var link = document.querySelector(cfg.selector);
             if (!link) return false;
-            link.href = url;
+            link.href = isDrawer ? '#' : url;
             link.classList.remove('is-disabled');
+            link.classList.toggle('has-drawer', isDrawer);
+            if (isDrawer) link.dataset.drawerKey = key;
+            else delete link.dataset.drawerKey;
             link.removeAttribute('aria-disabled');
             link.removeAttribute('title');
             delete link.dataset.disabledMessage;
@@ -1223,7 +1305,7 @@
             applyLabels(data && data.labels);
 
             Object.keys(services).forEach(function (key) {
-                if (enableService(key, data ? data[key] : null)) active++;
+                if (enableService(key, data ? data[key] : null, data && data.drawers ? data.drawers[key] : null)) active++;
             });
 
             if (active === total) {
@@ -1250,12 +1332,56 @@
             }
         }
 
+        var activeDrawers = {};
+        var drawerOverlay = document.getElementById('drawerOverlay');
+        var drawerOptions = document.getElementById('drawerOptions');
+        var drawerTitle = document.getElementById('drawerTitle');
+        var drawerClose = document.getElementById('drawerClose');
+        var lastDrawerTrigger = null;
+
+        function closeDrawer() {
+            drawerOverlay.hidden = true;
+            document.body.style.overflow = '';
+            if (lastDrawerTrigger) lastDrawerTrigger.focus();
+            lastDrawerTrigger = null;
+        }
+
+        function openDrawer(key, trigger) {
+            var drawer = activeDrawers[key];
+            if (!drawer || !Array.isArray(drawer.items) || !drawer.items.length) return;
+            drawerOptions.textContent = '';
+            var parentLabel = trigger.querySelector('.label strong') || trigger.querySelector('span');
+            drawerTitle.textContent = parentLabel ? parentLabel.textContent : 'Pilihan Link';
+            drawer.items.forEach(function (item) {
+                if (!item || typeof item.href !== 'string' || item.href.indexOf('/go/') !== 0) return;
+                var choice = document.createElement('a');
+                choice.className = 'drawer-choice';
+                choice.href = item.href;
+                choice.target = '_blank';
+                choice.rel = 'noopener noreferrer';
+                var label = document.createElement('strong');
+                label.textContent = item.label || 'Link Resmi';
+                var arrow = document.createElement('span');
+                arrow.className = 'drawer-choice-arrow';
+                arrow.setAttribute('aria-hidden', 'true');
+                arrow.textContent = '›';
+                choice.append(label, arrow);
+                drawerOptions.appendChild(choice);
+            });
+            lastDrawerTrigger = trigger;
+            drawerOverlay.hidden = false;
+            document.body.style.overflow = 'hidden';
+            drawerClose.focus();
+        }
+
         async function fetchContacts() {
             setStatus('updating', 'Updating • Sedang memperbarui link');
             try {
                 var response = await fetch('/api/contacts', { cache: 'no-store' });
                 if (!response.ok) throw new Error('Gagal membaca kontak');
-                applyServices(await response.json());
+                var data = await response.json();
+                activeDrawers = data.drawers || {};
+                applyServices(data);
             } catch (error) {
                 applyServices(null);
                 setStatus('ready', 'Offline • Gagal membaca layanan');
@@ -1263,10 +1389,24 @@
         }
 
         document.addEventListener('click', function (event) {
+            var drawerLink = event.target.closest('.has-drawer');
+            if (drawerLink) {
+                event.preventDefault();
+                openDrawer(drawerLink.dataset.drawerKey, drawerLink);
+                return;
+            }
             var link = event.target.closest('.link.is-disabled, .alternative-link.is-disabled');
             if (!link) return;
             event.preventDefault();
             alert(link.dataset.disabledMessage || 'Layanan sedang tidak tersedia atau belum tersedia.');
+        });
+
+        drawerClose.addEventListener('click', closeDrawer);
+        drawerOverlay.addEventListener('click', function (event) {
+            if (event.target === drawerOverlay) closeDrawer();
+        });
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape' && !drawerOverlay.hidden) closeDrawer();
         });
 
         document.addEventListener('DOMContentLoaded', function () {

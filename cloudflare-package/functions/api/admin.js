@@ -53,9 +53,10 @@ const ALLOWED_HOSTS = {
 
 const COOKIE_NAME = "__Host-magnum_admin_session";
 const SESSION_SECONDS = 2 * 60 * 60;
-const MAX_BODY_BYTES = 16 * 1024;
+const MAX_BODY_BYTES = 128 * 1024;
 const MAX_PASSWORD_CHARS = 256;
 const MAX_URL_CHARS = 2048;
+const MAX_DRAWER_ITEMS = 50;
 const encoder = new TextEncoder();
 
 function json(data, status = 200, extraHeaders = {}) {
@@ -251,6 +252,72 @@ function validateLabel(channel, value) {
   return { ok: true, value: label };
 }
 
+function defaultAdminDrawer(channel, directUrl) {
+  if (channel !== "telegram_group") return { enabled: false, items: [] };
+  return {
+    enabled: true,
+    items: [
+      {
+        id: "telegram-group-1",
+        label: "Grup Telegram Official 1",
+        url: directUrl || "",
+        active: Boolean(directUrl),
+      },
+      {
+        id: "telegram-group-2",
+        label: "Grup Telegram Official 2",
+        url: "",
+        active: false,
+      },
+    ],
+  };
+}
+
+function parseAdminDrawer(channel, value, directUrl) {
+  if (!value) return defaultAdminDrawer(channel, directUrl);
+  try {
+    const drawer = JSON.parse(value);
+    if (!drawer || typeof drawer.enabled !== "boolean" || !Array.isArray(drawer.items)) {
+      return defaultAdminDrawer(channel, directUrl);
+    }
+    return {
+      enabled: drawer.enabled,
+      items: drawer.items.slice(0, MAX_DRAWER_ITEMS).map((item) => ({
+        id: String(item && item.id || ""),
+        label: String(item && item.label || ""),
+        url: String(item && item.url || ""),
+        active: Boolean(item && item.active),
+      })),
+    };
+  } catch {
+    return defaultAdminDrawer(channel, directUrl);
+  }
+}
+
+function validateDrawer(channel, value) {
+  if (!value || typeof value.enabled !== "boolean" || !Array.isArray(value.items)) return null;
+  if (value.items.length > MAX_DRAWER_ITEMS) return null;
+
+  const ids = new Set();
+  const items = [];
+  for (const rawItem of value.items) {
+    if (!rawItem || typeof rawItem.active !== "boolean") return null;
+    const rawLabel = String(rawItem.label || "").trim();
+    const rawUrl = String(rawItem.url || "").trim();
+    if (!rawItem.active && !rawLabel && !rawUrl) continue;
+    const id = String(rawItem.id || "").trim();
+    if (!/^[a-zA-Z0-9_-]{8,64}$/.test(id) || ids.has(id)) return null;
+    ids.add(id);
+
+    const checkedLabel = validateLabel(channel, rawLabel);
+    const checkedUrl = validateTarget(channel, rawUrl);
+    if (!rawLabel || !checkedLabel.ok || !checkedUrl.ok) return null;
+    if (rawItem.active && !checkedUrl.value) return null;
+    items.push({ id, label: checkedLabel.value, url: checkedUrl.value, active: rawItem.active });
+  }
+  return { enabled: value.enabled, items };
+}
+
 function clientAddress(request) {
   return request.headers.get("CF-Connecting-IP") || "unknown";
 }
@@ -308,15 +375,17 @@ async function handleGetContacts(context) {
     return json({ ok: false, error: "BELUM_LOGIN" }, 401);
   }
 
-  const [links, statuses, labels, updatedAt, storedOrder] = await Promise.all([
+  const [links, statuses, labels, drawerValues, updatedAt, storedOrder] = await Promise.all([
     Promise.all(CHANNELS.map((channel) => context.env.CONTACTS.get(channel))),
     Promise.all(CHANNELS.map((channel) => context.env.CONTACTS.get(`status:${channel}`))),
     Promise.all(CHANNELS.map((channel) => context.env.CONTACTS.get(`label:${channel}`))),
+    Promise.all(CHANNELS.map((channel) => context.env.CONTACTS.get(`drawer:${channel}`))),
     context.env.CONTACTS.get("admin:updated_at"),
     context.env.CONTACTS.get(DISPLAY_ORDER_KEY),
   ]);
 
   const contacts = {};
+  const drawers = {};
   CHANNELS.forEach((channel, index) => {
     contacts[channel] = {
       url: links[index] || "",
@@ -325,11 +394,13 @@ async function handleGetContacts(context) {
         : Boolean(links[index]),
       label: labels[index] || DEFAULT_LABELS[channel],
     };
+    drawers[channel] = parseAdminDrawer(channel, drawerValues[index], links[index] || "");
   });
 
   return json({
     ok: true,
     contacts,
+    drawers,
     order: parseStoredDisplayOrder(storedOrder),
     updatedAt: updatedAt || null,
   });
@@ -347,8 +418,12 @@ async function handleSave(context) {
   const body = parsed.data;
 
   const incoming = body && body.contacts;
+  const incomingDrawers = body && body.drawers;
   if (!incoming || typeof incoming !== "object") {
     return json({ ok: false, error: "DATA_TIDAK_LENGKAP" }, 400);
+  }
+  if (!incomingDrawers || typeof incomingDrawers !== "object") {
+    return json({ ok: false, error: "DATA_LACI_TIDAK_LENGKAP" }, 400);
   }
 
   let displayOrder;
@@ -362,6 +437,7 @@ async function handleSave(context) {
   }
 
   const clean = {};
+  const cleanDrawers = {};
   for (const channel of CHANNELS) {
     const item = incoming[channel];
     if (!item || typeof item.active !== "boolean") {
@@ -374,9 +450,22 @@ async function handleSave(context) {
         400,
       );
     }
-    if (item.active && !checked.value) {
+    const checkedDrawer = validateDrawer(channel, incomingDrawers[channel]);
+    if (!checkedDrawer) {
+      return json(
+        { ok: false, error: "LACI_TIDAK_VALID", channel, message: `Folder laci ${channel} tidak valid.` },
+        400,
+      );
+    }
+    if (item.active && !checkedDrawer.enabled && !checked.value) {
       return json(
         { ok: false, error: "LINK_AKTIF_KOSONG", channel, message: `Isi link ${channel} atau nonaktifkan statusnya.` },
+        400,
+      );
+    }
+    if (item.active && checkedDrawer.enabled && !checkedDrawer.items.some((drawerItem) => drawerItem.active)) {
+      return json(
+        { ok: false, error: "LACI_AKTIF_KOSONG", channel, message: `Tambahkan minimal satu link aktif di laci ${channel}.` },
         400,
       );
     }
@@ -388,6 +477,7 @@ async function handleSave(context) {
       );
     }
     clean[channel] = { url: checked.value, active: item.active, label: checkedLabel.value };
+    cleanDrawers[channel] = checkedDrawer;
   }
 
   const updatedAt = new Date().toISOString();
@@ -403,6 +493,7 @@ async function handleSave(context) {
       context.env.CONTACTS.put(`status:${channel}`, item.active ? "active" : "inactive"),
     );
     writes.push(context.env.CONTACTS.put(`label:${channel}`, item.label));
+    writes.push(context.env.CONTACTS.put(`drawer:${channel}`, JSON.stringify(cleanDrawers[channel])));
   }
   writes.push(context.env.CONTACTS.put("admin:updated_at", updatedAt));
   writes.push(context.env.CONTACTS.put(DISPLAY_ORDER_KEY, JSON.stringify(displayOrder)));

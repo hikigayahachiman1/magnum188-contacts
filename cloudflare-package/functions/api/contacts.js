@@ -44,6 +44,32 @@ function parseDisplayOrder(value) {
   return [...DEFAULT_DISPLAY_ORDER];
 }
 
+function parsePublicDrawer(channel, value) {
+  if (!value) return { enabled: false, items: [] };
+  try {
+    const drawer = JSON.parse(value);
+    if (!drawer || drawer.enabled !== true || !Array.isArray(drawer.items)) {
+      return { enabled: false, items: [] };
+    }
+    const ids = new Set();
+    const items = [];
+    for (const item of drawer.items.slice(0, 50)) {
+      const id = String(item && item.id || "").trim();
+      const label = String(item && item.label || "").trim();
+      if (
+        !item || item.active !== true ||
+        !/^[a-zA-Z0-9_-]{8,64}$/.test(id) || ids.has(id) ||
+        !label || label.length > 60 || /[<>\u0000-\u001f\u007f\u202a-\u202e\u2066-\u2069]/i.test(label)
+      ) continue;
+      ids.add(id);
+      items.push({ id, label, href: `/go/${channel}/${id}` });
+    }
+    return { enabled: true, items };
+  } catch {
+    return { enabled: false, items: [] };
+  }
+}
+
 const jsonHeaders = {
   "Content-Type": "application/json; charset=utf-8",
   "Cache-Control": "no-store, no-cache, must-revalidate",
@@ -58,7 +84,7 @@ export async function onRequestGet(context) {
     );
   }
 
-  const [values, statuses, labels, storedOrder] = await Promise.all([
+  const [values, statuses, labels, drawerValues, storedOrder] = await Promise.all([
     Promise.all(CHANNELS.map((channel) => context.env.CONTACTS.get(channel))),
     Promise.all(
       CHANNELS.map((channel) => context.env.CONTACTS.get(`status:${channel}`)),
@@ -66,20 +92,33 @@ export async function onRequestGet(context) {
     Promise.all(
       CHANNELS.map((channel) => context.env.CONTACTS.get(`label:${channel}`)),
     ),
+    Promise.all(
+      CHANNELS.map((channel) => context.env.CONTACTS.get(`drawer:${channel}`)),
+    ),
     context.env.CONTACTS.get("display:order"),
   ]);
 
   const contacts = {};
+  const drawers = {};
   CHANNELS.forEach((channel, index) => {
     // Status lama yang belum memiliki key dianggap aktif agar tetap kompatibel.
     const isActive = statuses[index] !== "inactive";
-    contacts[channel] = values[index] && isActive ? `/go/${channel}` : "";
+    const drawer = parsePublicDrawer(channel, drawerValues[index]);
+    drawers[channel] = drawer;
+    contacts[channel] = !isActive
+      ? ""
+      : drawer.enabled && drawer.items.length
+        ? `/drawer/${channel}`
+        : values[index]
+          ? `/go/${channel}`
+          : "";
   });
   contacts.order = parseDisplayOrder(storedOrder);
   contacts.labels = {};
   CHANNELS.forEach((channel, index) => {
     contacts.labels[channel] = labels[index] || DEFAULT_LABELS[channel];
   });
+  contacts.drawers = drawers;
 
   return new Response(JSON.stringify(contacts), {
     status: 200,
