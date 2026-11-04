@@ -9,7 +9,8 @@ urutan tombol, serta membuat folder laci pilihan link melalui halaman
 
 - `index.html`: halaman kontak publik premium dengan efek kilau, tombol
   Telegram Official dan Channel Telegram yang terpisah, Link Alternatif di
-  bagian header, ikon SVG, dan badge tombol grup.
+  bagian header, serta tombol Download APK M188 dengan ikon Android yang
+  tepat di bawah Link Alternatif dan memiliki desain identik, ikon SVG, dan badge tombol grup.
 - `groupm188/index.html`: halaman khusus Channel Telegram serta grup resmi
   WhatsApp, Telegram, dan Facebook yang dapat dibuka melalui `/groupm188/`.
 - `admin/index.html`: sumber panel admin yang ditampilkan melalui `/admin.php/`.
@@ -93,7 +94,10 @@ menambahkan binding/secret, lakukan deployment baru.
 9. Klik Simpan Perubahan.
 
 Urutan berlaku untuk tujuh tombol layanan pada halaman utama. Link Alternatif
-tetap berada di kanan atas karena memakai posisi header khusus. Halaman
+tetap berada di kanan atas karena memakai posisi header khusus. Tombol
+**Download APK M188** berada tepat di bawah Link Alternatif dalam grup yang sama dan
+sebelum tombol WhatsApp. Lebar, tinggi, warna, dan efeknya sama dengan Link Alternatif. Keduanya
+tidak ikut pengurutan tombol utama. Halaman
 `/groupm188/` otomatis mengikuti urutan relatif dari empat tombol komunitas.
 
 `admin.php` pada alamat tersebut adalah nama jalur yang diproksikan secara
@@ -108,7 +112,7 @@ Tidak diperlukan binding KV atau panel admin tambahan. Halaman memeriksa
 pembaruan secara berkala; tombol grup yang dinonaktifkan tidak dapat dibuka.
 
 Panel menyimpan link ke key (`whatsapp`, `telegram`, `telegram_channel`,
-`alternative`, dan seterusnya) serta status ke key `status:<channel>`. Data lama
+`alternative`, `apk_download`, dan seterusnya) serta status ke key `status:<channel>`. Data lama
 tetap kompatibel: link lama yang sudah terisi dianggap aktif, sedangkan Channel
 Telegram dan Link Alternatif baru yang masih kosong dimulai dalam keadaan
 nonaktif.
@@ -129,6 +133,28 @@ berlebihan atau penyalahgunaan, backend menerapkan batas teknis 50 item per
 laci. Hanya item aktif yang ditampilkan kepada member. Tombol induk yang aktif
 dan memakai mode laci wajib memiliki minimal satu item aktif.
 
+## Download APK M188
+
+Tombol unduh ditambahkan ke halaman utama (`index.html`) menggunakan nama key
+`apk_download`. Link awalnya adalah `https://shrtl.sbs/apkmagnum188`. Link tersebut hanya
+dipakai otomatis pada pemasangan awal ketika key `apk_download` **dan**
+`status:apk_download` belum ada di KV. Jadi tombol dapat langsung diklik setelah
+deploy tanpa melakukan migrasi KV atau menambah Pages Function.
+
+Untuk mengganti link: masuk ke `/admin.php/`, temukan kartu **Download APK M188**,
+ubah URL dan bila perlu nama tampilan, lalu klik **Simpan Perubahan**.
+Setelah penyimpanan pertama, nilai KV dan status aktif/nonaktif akan selalu
+menjadi acuan, termasuk apabila tombol dinonaktifkan. Tombol mengarahkan
+pengguna ke link eksternal melalui `/go/apk_download`; file APK **tidak**
+disimpan di repo atau disediakan oleh Cloudflare Pages. Keberhasilan unduhan
+bergantung pada tujuan akhir link eksternal.
+
+Domain URL baru harus ada di allowlist `apk_download` yang dijaga pada
+`functions/api/admin.js` serta dua file `functions/go/` (untuk link langsung
+dan laci). Saat ini: `shrtl.sbs`, `pasticuan.me`, `livemagnum188.chat`
+(termasuk `www`). Mengubah allowlist memerlukan commit kode, bukan hanya
+perubahan di panel.
+
 ## Domain tujuan yang diizinkan
 
 - WhatsApp: `wa.me`, `api.whatsapp.com`, `pasticuan.me`.
@@ -140,6 +166,8 @@ dan memakai mode laci wajib memiliki minimal satu item aktif.
 - Grup Facebook: `facebook.com`, `www.facebook.com`, `pasticuan.me`.
 - Link Alternatif: `pasticuan.me`, `shrtl.sbs`, `livemagnum188.chat`,
   `heylink.me`, termasuk versi `www`.
+- Download APK M188: `shrtl.sbs`, `pasticuan.me`, `livemagnum188.chat`,
+  termasuk versi `www`.
 
 Hanya protokol HTTPS yang diterima. Daftar ini mencegah panel digunakan sebagai
 open redirect menuju domain sembarangan.
@@ -184,3 +212,7 @@ Self-hosted pada Cloudflare Zero Trust dan izinkan hanya email admin Anda:
 
 Dengan konfigurasi tersebut, orang lain harus melewati Cloudflare Access lebih
 dahulu sebelum halaman password panel atau API admin dapat dijangkau.
+
+
+### Tampilan tombol APK M188 (revisi)
+Tombol **DOWNLOAD APK M188** muncul tepat di bawah tombol **LINK ALTERNATIF** dalam satu grup di header. Keduanya memakai class `.alternative-link` yang sama, sehingga warna emas, ukuran/lebar, border, hover, dan efek shine identik. Ikon Android tampil pada tombol APK. Pengaturan URL, label, dan status tetap melalui panel admin; jalur redirect tetap `/go/apk_download`.

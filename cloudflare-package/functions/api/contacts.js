@@ -7,7 +7,10 @@ const CHANNELS = [
   "telegram_group",
   "facebook_group",
   "alternative",
+  "apk_download",
 ];
+
+const DEFAULT_APK_URL = "https://shrtl.sbs/apkmagnum188";
 
 const DEFAULT_DISPLAY_ORDER = [
   "whatsapp",
@@ -27,6 +30,7 @@ const DEFAULT_LABELS = {
   telegram_group: "Grup Telegram Official",
   facebook_group: "Grup Facebook Official",
   alternative: "LINK ALTERNATIF",
+  apk_download: "DOWNLOAD APK M188",
 };
 
 function parseDisplayOrder(value) {
@@ -105,11 +109,13 @@ export async function onRequestGet(context) {
     const isActive = statuses[index] !== "inactive";
     const drawer = parsePublicDrawer(channel, drawerValues[index]);
     drawers[channel] = drawer;
+    const hasDefaultApk = channel === "apk_download" &&
+      statuses[index] === null && !values[index];
     contacts[channel] = !isActive
       ? ""
       : drawer.enabled && drawer.items.length
         ? `/drawer/${channel}`
-        : values[index]
+        : values[index] || (hasDefaultApk && DEFAULT_APK_URL)
           ? `/go/${channel}`
           : "";
   });

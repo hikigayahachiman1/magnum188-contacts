@@ -6,6 +6,7 @@ const CHANNEL_HOSTS = {
   whatsapp_group: new Set(["chat.whatsapp.com", "pasticuan.me", "www.pasticuan.me"]),
   telegram_group: new Set(["t.me", "telegram.me", "pasticuan.me", "www.pasticuan.me"]),
   facebook_group: new Set(["facebook.com", "www.facebook.com", "pasticuan.me", "www.pasticuan.me"]),
+  apk_download: new Set(["shrtl.sbs", "www.shrtl.sbs", "pasticuan.me", "www.pasticuan.me", "livemagnum188.chat", "www.livemagnum188.chat"]),
   alternative: new Set([
     "pasticuan.me",
     "www.pasticuan.me",
@@ -42,12 +43,13 @@ export async function onRequestGet(context) {
     return errorResponse("Penyimpanan kontak belum dikonfigurasi.", 503);
   }
 
-  const target = String((await context.env.CONTACTS.get(channel)) || "").trim();
+  const stored = String((await context.env.CONTACTS.get(channel)) || "").trim();
+  const status = await context.env.CONTACTS.get(`status:${channel}`);
+  // URL awal hanya aktif jika layanan APK belum pernah disimpan dari panel.
+  const target = stored || (channel === "apk_download" && status === null ? "https://shrtl.sbs/apkmagnum188" : "");
   if (!target) {
     return errorResponse("Kontak sedang tidak tersedia.", 404);
   }
-
-  const status = await context.env.CONTACTS.get(`status:${channel}`);
   if (status === "inactive") {
     return errorResponse("Kontak sedang dinonaktifkan.", 404);
   }

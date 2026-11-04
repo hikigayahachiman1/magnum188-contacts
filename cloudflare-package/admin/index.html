@@ -334,7 +334,7 @@
       </div>
 
       <form id="contactsForm">
-        <p class="order-help"><strong>Urutan tampilan:</strong> geser kartu atau gunakan tombol ↑ dan ↓. Link Alternatif tetap berada di kanan atas halaman utama.</p>
+        <p class="order-help"><strong>Urutan tampilan:</strong> geser kartu atau gunakan tombol ↑ dan ↓. Link Alternatif tetap berada di kanan atas; tombol Download APK M188 berada tepat di bawah header.</p>
         <div id="contactsGrid" class="grid"></div>
         <div class="footer-actions">
           <div id="updatedText" class="updated">Belum ada informasi pembaruan.</div>
@@ -360,9 +360,11 @@
       { key: "whatsapp_group", label: "Grup WhatsApp", short: "WG", allowed: "chat.whatsapp.com, pasticuan.me" },
       { key: "telegram_group", label: "Grup Telegram", short: "GT", allowed: "t.me, telegram.me, pasticuan.me" },
       { key: "facebook_group", label: "Grup Facebook", short: "FB", allowed: "facebook.com, pasticuan.me" },
-      { key: "alternative", label: "Link Alternatif", short: "ALT", allowed: "pasticuan.me, shrtl.sbs, livemagnum188.chat, heylink.me" }
+      { key: "alternative", label: "Link Alternatif", short: "ALT", allowed: "pasticuan.me, shrtl.sbs, livemagnum188.chat, heylink.me" },
+      { key: "apk_download", label: "Download APK M188", short: "APK", allowed: "shrtl.sbs, pasticuan.me, livemagnum188.chat" }
     ];
-    const defaultOrder = services.filter((service) => service.key !== "alternative").map((service) => service.key);
+    const fixedServices = new Set(["alternative", "apk_download"]);
+    const defaultOrder = services.filter((service) => !fixedServices.has(service.key)).map((service) => service.key);
 
     const loginView = document.getElementById("loginView");
     const dashboardView = document.getElementById("dashboardView");
@@ -600,6 +602,7 @@
       const orderedKeys = normalizeOrder(order);
       const orderedServices = orderedKeys.map((key) => services.find((service) => service.key === key));
       orderedServices.push(services.find((service) => service.key === "alternative"));
+      orderedServices.push(services.find((service) => service.key === "apk_download"));
       for (const service of orderedServices) {
         const value = contacts[service.key] || { url: "", active: false };
         const card = document.createElement("article");
@@ -627,7 +630,7 @@
         switchLabel.append(toggle, slider);
         const actions = document.createElement("div");
         actions.className = "card-actions";
-        if (service.key !== "alternative") actions.appendChild(addOrderControls(card, service));
+        if (!fixedServices.has(service.key)) actions.appendChild(addOrderControls(card, service));
         actions.appendChild(switchLabel);
         head.appendChild(actions);
 

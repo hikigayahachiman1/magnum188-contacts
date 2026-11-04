@@ -7,7 +7,10 @@ const CHANNELS = [
   "telegram_group",
   "facebook_group",
   "alternative",
+  "apk_download",
 ];
+
+const DEFAULT_APK_URL = "https://shrtl.sbs/apkmagnum188";
 
 const DEFAULT_DISPLAY_ORDER = [
   "whatsapp",
@@ -28,6 +31,7 @@ const DEFAULT_LABELS = {
   telegram_group: "Grup Telegram Official",
   facebook_group: "Grup Facebook Official",
   alternative: "LINK ALTERNATIF",
+  apk_download: "DOWNLOAD APK M188",
 };
 const MAX_LABEL_CHARS = 60;
 
@@ -39,6 +43,7 @@ const ALLOWED_HOSTS = {
   whatsapp_group: new Set(["chat.whatsapp.com", "pasticuan.me", "www.pasticuan.me"]),
   telegram_group: new Set(["t.me", "telegram.me", "pasticuan.me", "www.pasticuan.me"]),
   facebook_group: new Set(["facebook.com", "www.facebook.com", "pasticuan.me", "www.pasticuan.me"]),
+  apk_download: new Set(["shrtl.sbs", "www.shrtl.sbs", "pasticuan.me", "www.pasticuan.me", "livemagnum188.chat", "www.livemagnum188.chat"]),
   alternative: new Set([
     "pasticuan.me",
     "www.pasticuan.me",
@@ -387,14 +392,16 @@ async function handleGetContacts(context) {
   const contacts = {};
   const drawers = {};
   CHANNELS.forEach((channel, index) => {
+    // Default hanya berlaku sebelum pertama kali dikonfigurasi di panel admin.
+    const url = links[index] || (channel === "apk_download" && !statuses[index] ? DEFAULT_APK_URL : "");
     contacts[channel] = {
-      url: links[index] || "",
+      url,
       active: statuses[index]
         ? statuses[index] !== "inactive"
-        : Boolean(links[index]),
+        : Boolean(url),
       label: labels[index] || DEFAULT_LABELS[channel],
     };
-    drawers[channel] = parseAdminDrawer(channel, drawerValues[index], links[index] || "");
+    drawers[channel] = parseAdminDrawer(channel, drawerValues[index], url);
   });
 
   return json({
