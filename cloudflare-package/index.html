@@ -944,6 +944,31 @@
                 scroll-behavior: auto !important;
             }
         }
+
+        /* Pasangan tombol identik: APK tepat di bawah Link Alternatif. */
+        .brand-actions {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            gap: 8px;
+            margin-left: auto;
+            flex: 0 0 auto;
+        }
+
+        .brand-actions .alternative-link {
+            width: 100%;
+            margin-left: 0;
+        }
+
+        @media (max-width: 540px) {
+            .brand-actions {
+                grid-column: 2;
+                justify-self: start;
+                margin: 0;
+                max-width: 100%;
+                gap: 7px;
+            }
+        }
     </style>
 </head>
 
@@ -965,12 +990,24 @@
                             <span id="statusText">Online • Layanan siap digunakan</span>
                         </div>
                     </div>
-                    <a id="alternativeLink" class="alternative-link" href="#" target="_blank" rel="noopener noreferrer">
-                        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                            <path d="m9.5 14.5 5-5M7.2 16.8l-1.1 1.1a3.4 3.4 0 0 1-4.8-4.8l3.2-3.2a3.4 3.4 0 0 1 4.8 0M16.8 7.2l1.1-1.1a3.4 3.4 0 1 1 4.8 4.8l-3.2 3.2a3.4 3.4 0 0 1-4.8 0" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                        <span>LINK ALTERNATIF</span>
-                    </a>
+                    <div class="brand-actions" aria-label="Link resmi MAGNUM188">
+                        <a id="alternativeLink" class="alternative-link" href="#" target="_blank" rel="noopener noreferrer">
+                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                <path d="m9.5 14.5 5-5M7.2 16.8l-1.1 1.1a3.4 3.4 0 0 1-4.8-4.8l3.2-3.2a3.4 3.4 0 0 1 4.8 0M16.8 7.2l1.1-1.1a3.4 3.4 0 0 1 4.8 4.8l-3.2 3.2a3.4 3.4 0 0 1-4.8 0" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            <span>LINK ALTERNATIF</span>
+                        </a>
+                        <!-- Menggunakan desain persis sama dan redirect /go/apk_download. -->
+                        <a id="apkDownloadLink" class="alternative-link" href="#" target="_blank" rel="noopener noreferrer" aria-label="Download APK M188 untuk Android">
+                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                <path d="m7.2 4.3-1.5-2M16.8 4.3l1.5-2" stroke="currentColor" stroke-width="1.65" stroke-linecap="round"/>
+                                <path d="M4.8 10a7.2 7.2 0 0 1 14.4 0H4.8Z" stroke="currentColor" stroke-width="1.65" stroke-linejoin="round"/>
+                                <path d="M5 11.4h14v5.1c0 .8-.7 1.5-1.5 1.5h-11c-.8 0-1.5-.7-1.5-1.5v-5.1ZM7.9 18v3M16.1 18v3M2.6 11.7v4.6M21.4 11.7v4.6" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"/>
+                                <circle cx="9" cy="7.8" r=".6" fill="currentColor"/><circle cx="15" cy="7.8" r=".6" fill="currentColor"/>
+                            </svg>
+                            <span>DOWNLOAD APK M188</span>
+                        </a>
+                    </div>
                 </header>
 
                 <main class="links">
@@ -1161,6 +1198,11 @@
                 readyText: 'Buka link alternatif resmi',
                 disabledText: 'Link alternatif sedang tidak tersedia.'
             },
+            apk_download: {
+                selector: '#apkDownloadLink',
+                readyText: 'Aplikasi Android M188',
+                disabledText: 'Download APK M188 sedang tidak tersedia.'
+            },
             whatsapp: {
                 selector: '#whatsappLink',
                 readyText: 'Respon cepat & bantuan akun',
@@ -1229,7 +1271,7 @@
                 var cfg = services[key];
                 var link = cfg && document.querySelector(cfg.selector);
                 if (!link) return;
-                var target = key === 'alternative'
+                var target = (key === 'alternative' || key === 'apk_download')
                     ? link.querySelector('span')
                     : link.querySelector('.label strong');
                 if (target) target.textContent = label;
