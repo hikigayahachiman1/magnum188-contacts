@@ -149,7 +149,7 @@
       transition: border-color .18s, opacity .18s;
     }
 
-    .contact-card.inactive { opacity: .72; border-color: rgba(255, 255, 255, .07); }
+    .contact-card.inactive { opacity: .72; border-color: rgba(255, 255, 255, .07); border-top-color: rgba(255, 255, 255, .18); }
     .contact-card.dragging { opacity: .45; border-color: rgba(243, 208, 108, .7); }
     .contact-card.drag-over { border-color: var(--gold); box-shadow: 0 0 0 2px rgba(243, 208, 108, .12); }
 
@@ -193,19 +193,66 @@
       line-height: 1.5;
     }
 
+    .group-section {
+      margin-bottom: 24px;
+      padding: 16px;
+      border: 1px solid rgba(243, 208, 108, .14);
+      border-radius: 20px;
+      background: rgba(0, 0, 0, .16);
+    }
+    .group-head { margin: 0 2px 12px; }
+    .group-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0;
+      color: var(--gold);
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+    .group-title::after { content: ""; flex: 1; height: 1px; background: linear-gradient(90deg, rgba(243, 208, 108, .35), transparent); }
+    .group-desc { margin: 6px 0 0; color: var(--muted); font-size: 12px; line-height: 1.45; }
+
+    .order-preview { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 0 2px 14px; }
+    .order-preview::before { content: "Urutan tampil:"; margin-right: 2px; color: #d9cdb0; font-size: 12px; font-weight: 800; }
+    .order-preview span {
+      padding: 5px 10px;
+      border: 1px solid rgba(243, 208, 108, .24);
+      border-radius: 999px;
+      color: #f5e7c0;
+      background: rgba(243, 208, 108, .07);
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .order-preview span.off { color: #a99da0; border-style: dashed; background: transparent; }
+
+    .contact-card { --tone: 243, 208, 108; border-top: 3px solid rgba(var(--tone), .55); }
+    .contact-card.tone-wa { --tone: 37, 211, 102; }
+    .contact-card.tone-tg { --tone: 42, 171, 238; }
+    .contact-card.tone-lc { --tone: 255, 90, 0; }
+    .contact-card.tone-fb { --tone: 66, 103, 178; }
+
     .service-icon {
       display: grid;
       place-items: center;
-      width: 36px;
-      height: 36px;
-      border-radius: 12px;
+      width: 40px;
+      height: 40px;
+      flex: 0 0 auto;
+      border: 1px solid rgba(255, 255, 255, .22);
+      border-radius: 13px;
       color: #fff;
-      font-size: 11px;
-      font-weight: 900;
-      background: linear-gradient(145deg, #ef3948, #9e1028);
+      box-shadow: 0 8px 18px rgba(0, 0, 0, .3), inset 0 1px 1px rgba(255, 255, 255, .25);
     }
+    .service-icon svg { width: 22px; height: 22px; }
+    .tone-wa .service-icon { background: linear-gradient(145deg, #40ed79, #20c45c 58%, #119242); }
+    .tone-tg .service-icon { background: linear-gradient(145deg, #5bc8f5, #2aabee 58%, #157ebd); }
+    .tone-lc .service-icon { background: linear-gradient(145deg, #ff8a3d, #ff5a00 58%, #d94400); }
+    .tone-fb .service-icon { background: linear-gradient(145deg, #6996ed, #4267b2 58%, #294a8e); }
+    .tone-gold .service-icon { color: #ffe58a; border-color: rgba(243, 208, 108, .55); background: linear-gradient(135deg, rgba(255, 219, 91, .18), rgba(42, 18, 20, .8)); }
 
-    .service-name { margin: 0; font-size: 14px; }
+    .service-name { margin: 0; font-size: 15px; }
     .status-text { margin: 3px 0 0; color: var(--green); font-size: 11px; font-weight: 800; text-transform: uppercase; }
     .inactive .status-text { color: #a99da0; }
 
@@ -247,10 +294,10 @@
     .drawer-item-toggle input { width: 16px; height: 16px; accent-color: var(--green); }
     .mini-button { min-width: 30px; min-height: 30px; padding: 0; color: #eadcae; background: rgba(255,255,255,.045); border-color: var(--line); }
     .remove-drawer-item { min-width: 34px; color: #ff9ca5; }
-    .drawer-item-fields { display: grid; grid-template-columns: .8fr 1.4fr auto; gap: 7px; }
+    .drawer-item-fields { display: grid; grid-template-columns: 1.1fr 1.2fr auto; gap: 7px; }
     .drawer-item-fields input { min-width: 0; }
 
-    .allowed { margin: 8px 2px 0; color: #8e8284; font-size: 10px; line-height: 1.4; }
+    .allowed { margin: 8px 2px 0; color: #a2969a; font-size: 11px; line-height: 1.4; }
 
     .footer-actions {
       display: flex;
@@ -291,6 +338,7 @@
     @media (max-width: 760px) {
       .shell { padding-top: 20px; }
       .grid { grid-template-columns: 1fr; }
+      .group-section { padding: 12px; }
       .dashboard { padding: 17px; }
       .dashboard-head, .footer-actions { flex-direction: column; align-items: stretch; }
       .footer-buttons { display: grid; grid-template-columns: 1fr 1.5fr; }
@@ -334,8 +382,8 @@
       </div>
 
       <form id="contactsForm">
-        <p class="order-help"><strong>Urutan tampilan:</strong> geser kartu atau gunakan tombol ↑ dan ↓. Link Alternatif tetap berada di kanan atas; tombol Download APK M188 berada tepat di bawah header.</p>
-        <div id="contactsGrid" class="grid"></div>
+        <p class="order-help"><strong>Cara mengatur urutan:</strong> pegang nomor kartu lalu geser, atau pakai tombol ↑ dan ↓. Urutan berlaku <strong>di dalam kelompoknya</strong>: kartu Hubungi CS tidak bisa dipindah ke Komunitas. Baris "Urutan tampil" menunjukkan urutan persis seperti yang dilihat member.</p>
+        <div id="contactsGrid"></div>
         <div class="footer-actions">
           <div id="updatedText" class="updated">Belum ada informasi pembaruan.</div>
           <div class="footer-buttons">
@@ -352,19 +400,36 @@
   <script>
     "use strict";
 
+    // Ikon sama dengan halaman publik (SVG statis, bukan data pengguna).
+    const ICONS = {
+      wa: '<svg viewBox="0 0 24 24" fill="none"><path d="M12 3.25a8.75 8.75 0 0 0-7.5 13.27L3.25 20.75l4.35-1.2A8.75 8.75 0 1 0 12 3.25Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.2 7.8c.4-.4.8-.2 1 .2l.8 1.7c.1.3.1.6-.2.8l-.6.6c.5 1.3 1.6 2.4 2.9 2.9l.7-.7c.2-.2.5-.3.8-.1l1.7.8c.4.2.5.6.3 1-.4.8-1.2 1.3-2.1 1.2-3.1-.4-5.8-3.1-6.2-6.2-.1-.9.3-1.7.9-2.2Z" fill="currentColor"/></svg>',
+      tg: '<svg viewBox="0 0 24 24" fill="none"><path d="M20.5 4.5 17.7 19c-.2 1-1 1.2-1.8.7l-4.3-3.2-2.1 2c-.2.2-.4.4-.9.4l.3-4.4 8-7.2c.4-.3-.1-.5-.5-.2l-9.9 6.2-4.2-1.3c-.9-.3-.9-.9.2-1.3l16.4-6.3c.8-.3 1.5.2 1.2 1.3Z" fill="currentColor"/></svg>',
+      lc: '<svg viewBox="0 0 24 24" fill="none"><path d="M6 3.5h12a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3h-7.2l-4.6 3.4c-.6.4-1.2.1-1.2-.6v-2.8a2 2 0 0 1-2-2v-9a3 3 0 0 1 3-3Z" fill="currentColor"/></svg>',
+      fb: '<svg viewBox="0 0 24 24" fill="none"><path d="M14.2 21v-8h2.7l.4-3.1h-3.1v-2c0-.9.25-1.5 1.55-1.5h1.65V3.62c-.29-.04-1.27-.12-2.42-.12-2.4 0-4.05 1.47-4.05 4.16V10H8.2v3.1h2.73V21h3.27Z" fill="currentColor"/></svg>',
+      link: '<svg viewBox="0 0 24 24" fill="none"><path d="m9.5 14.5 5-5M7.2 16.8l-1.1 1.1a3.4 3.4 0 0 1-4.8-4.8l3.2-3.2a3.4 3.4 0 0 1 4.8 0M16.8 7.2l1.1-1.1a3.4 3.4 0 0 1 4.8 4.8l-3.2 3.2a3.4 3.4 0 0 1-4.8 0" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+      apk: '<svg viewBox="0 0 24 24" fill="none"><path d="m7.2 4.3-1.5-2M16.8 4.3l1.5-2" stroke="currentColor" stroke-width="1.65" stroke-linecap="round"/><path d="M4.8 10a7.2 7.2 0 0 1 14.4 0H4.8Z" stroke="currentColor" stroke-width="1.65" stroke-linejoin="round"/><path d="M5 11.4h14v5.1c0 .8-.7 1.5-1.5 1.5h-11c-.8 0-1.5-.7-1.5-1.5v-5.1ZM7.9 18v3M16.1 18v3" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+    };
+
     const services = [
-      { key: "whatsapp", label: "WhatsApp Official", short: "WA", allowed: "wa.me, api.whatsapp.com, pasticuan.me" },
-      { key: "telegram", label: "Telegram Official", short: "TG", allowed: "t.me, telegram.me, pasticuan.me" },
-      { key: "telegram_channel", label: "Channel Telegram Official", short: "CH", allowed: "t.me, telegram.me, pasticuan.me" },
-      { key: "livechat", label: "LiveChat Official", short: "LC", allowed: "direct.lc.chat, pasticuan.me" },
-      { key: "whatsapp_group", label: "Grup WhatsApp", short: "WG", allowed: "chat.whatsapp.com, pasticuan.me" },
-      { key: "telegram_group", label: "Grup Telegram", short: "GT", allowed: "t.me, telegram.me, pasticuan.me" },
-      { key: "facebook_group", label: "Grup Facebook", short: "FB", allowed: "facebook.com, pasticuan.me" },
-      { key: "alternative", label: "Link Alternatif", short: "ALT", allowed: "pasticuan.me, shrtl.sbs, livemagnum188.chat, heylink.me" },
-      { key: "apk_download", label: "Download APK M188", short: "APK", allowed: "shrtl.sbs, pasticuan.me, livemagnum188.chat" }
+      { key: "whatsapp", label: "WhatsApp", group: "cs", icon: ICONS.wa, tone: "wa", allowed: "wa.me, api.whatsapp.com, pasticuan.me" },
+      { key: "telegram", label: "Telegram", group: "cs", icon: ICONS.tg, tone: "tg", allowed: "t.me, telegram.me, pasticuan.me" },
+      { key: "livechat", label: "LiveChat", group: "cs", icon: ICONS.lc, tone: "lc", allowed: "direct.lc.chat, pasticuan.me" },
+      { key: "telegram_channel", label: "Channel Telegram", group: "komunitas", icon: ICONS.tg, tone: "tg", allowed: "t.me, telegram.me, pasticuan.me" },
+      { key: "whatsapp_group", label: "Grup WhatsApp", group: "komunitas", icon: ICONS.wa, tone: "wa", allowed: "chat.whatsapp.com, pasticuan.me" },
+      { key: "telegram_group", label: "Grup Telegram", group: "komunitas", icon: ICONS.tg, tone: "tg", allowed: "t.me, telegram.me, pasticuan.me" },
+      { key: "facebook_group", label: "Grup Facebook", group: "komunitas", icon: ICONS.fb, tone: "fb", allowed: "facebook.com, pasticuan.me" },
+      { key: "alternative", label: "Link Alternatif", group: "header", icon: ICONS.link, tone: "gold", allowed: "pasticuan.me, shrtl.sbs, livemagnum188.chat, heylink.me" },
+      { key: "apk_download", label: "Download APK M188", group: "header", icon: ICONS.apk, tone: "gold", allowed: "shrtl.sbs, pasticuan.me, livemagnum188.chat" }
     ];
-    const fixedServices = new Set(["alternative", "apk_download"]);
+    // Kelompok sama persis dengan halaman publik; urutan hanya berlaku di dalam kelompoknya.
+    const groups = [
+      { id: "cs", title: "Hubungi CS", desc: "Tampil di halaman utama, bagian Hubungi CS.", orderable: true },
+      { id: "komunitas", title: "Komunitas", desc: "Tampil di halaman utama bagian Komunitas, dan di halaman /groupm188/ dengan urutan yang sama.", orderable: true },
+      { id: "header", title: "Tombol Header", desc: "Selalu di kanan atas halaman utama (Link Alternatif di atas, Download APK di bawahnya). Posisinya tetap.", orderable: false }
+    ];
+    const fixedServices = new Set(services.filter((service) => service.group === "header").map((service) => service.key));
     const defaultOrder = services.filter((service) => !fixedServices.has(service.key)).map((service) => service.key);
+    const serviceByKey = (key) => services.find((service) => service.key === key);
 
     const loginView = document.getElementById("loginView");
     const dashboardView = document.getElementById("dashboardView");
@@ -412,22 +477,37 @@
       return clean;
     }
 
+    // Nomor, tombol ↑↓ dan baris "urutan tampil" dihitung per kelompok.
     function syncOrderUI() {
-      const cards = [...contactsGrid.querySelectorAll('.contact-card[data-orderable="true"]')];
-      cards.forEach((card, index) => {
-        card.querySelector('[data-role="order-number"]').textContent = String(index + 1);
-        card.querySelector('[data-role="move-up"]').disabled = index === 0;
-        card.querySelector('[data-role="move-down"]').disabled = index === cards.length - 1;
-      });
+      for (const section of contactsGrid.querySelectorAll(".group-section")) {
+        const cards = [...section.querySelectorAll('.contact-card[data-orderable="true"]')];
+        cards.forEach((card, index) => {
+          card.querySelector('[data-role="order-number"]').textContent = String(index + 1);
+          card.querySelector('[data-role="move-up"]').disabled = index === 0;
+          card.querySelector('[data-role="move-down"]').disabled = index === cards.length - 1;
+        });
+        const preview = section.querySelector('[data-role="order-preview"]');
+        if (!preview) continue;
+        preview.textContent = "";
+        cards.forEach((card, index) => {
+          const chip = document.createElement("span");
+          const active = card.querySelector('[data-role="active"]').checked;
+          const name = card.querySelector('[data-role="label"]').value.trim() || serviceByKey(card.dataset.key).label;
+          chip.textContent = `${index + 1}. ${name}${active ? "" : " (nonaktif)"}`;
+          chip.classList.toggle("off", !active);
+          preview.appendChild(chip);
+        });
+      }
     }
 
     function moveCard(card, direction) {
-      const cards = [...contactsGrid.querySelectorAll('.contact-card[data-orderable="true"]')];
+      const grid = card.parentElement;
+      const cards = [...grid.querySelectorAll('.contact-card[data-orderable="true"]')];
       const index = cards.indexOf(card);
       const target = cards[index + direction];
       if (!target) return;
-      if (direction < 0) contactsGrid.insertBefore(card, target);
-      else contactsGrid.insertBefore(target, card);
+      if (direction < 0) grid.insertBefore(card, target);
+      else grid.insertBefore(target, card);
       syncOrderUI();
     }
 
@@ -471,19 +551,25 @@
         contactsGrid.querySelectorAll(".drag-over").forEach((item) => item.classList.remove("drag-over"));
         syncOrderUI();
       });
+      // Geser hanya di dalam kelompok yang sama (CS tidak bisa pindah ke Komunitas).
+      const sameGroupDrag = () => {
+        const dragged = contactsGrid.querySelector(".contact-card.dragging");
+        return dragged && dragged !== card && dragged.parentElement === card.parentElement ? dragged : null;
+      };
       card.addEventListener("dragover", (event) => {
+        if (!sameGroupDrag()) return;
         event.preventDefault();
-        if (!card.classList.contains("dragging")) card.classList.add("drag-over");
+        card.classList.add("drag-over");
       });
       card.addEventListener("dragleave", () => card.classList.remove("drag-over"));
       card.addEventListener("drop", (event) => {
         event.preventDefault();
         card.classList.remove("drag-over");
-        const dragged = contactsGrid.querySelector(".contact-card.dragging");
-        if (!dragged || dragged === card) return;
-        const cards = [...contactsGrid.querySelectorAll('.contact-card[data-orderable="true"]')];
+        const dragged = sameGroupDrag();
+        if (!dragged) return;
+        const cards = [...card.parentElement.querySelectorAll('.contact-card[data-orderable="true"]')];
         if (cards.indexOf(dragged) < cards.indexOf(card)) card.after(dragged);
-        else contactsGrid.insertBefore(dragged, card);
+        else card.parentElement.insertBefore(dragged, card);
         syncOrderUI();
       });
       return controls;
@@ -597,24 +683,18 @@
       syncDrawerItems(container);
     }
 
-    function renderContacts(contacts, order, drawers) {
-      contactsGrid.textContent = "";
-      const orderedKeys = normalizeOrder(order);
-      const orderedServices = orderedKeys.map((key) => services.find((service) => service.key === key));
-      orderedServices.push(services.find((service) => service.key === "alternative"));
-      orderedServices.push(services.find((service) => service.key === "apk_download"));
-      for (const service of orderedServices) {
+    function buildCard(service, contacts, drawers) {
         const value = contacts[service.key] || { url: "", active: false };
         const card = document.createElement("article");
-        card.className = `contact-card${value.active ? "" : " inactive"}`;
+        card.className = `contact-card tone-${service.tone}${value.active ? "" : " inactive"}`;
         card.dataset.key = service.key;
 
         const head = document.createElement("div");
         head.className = "card-head";
         head.innerHTML = `
           <div class="service">
-            <div class="service-icon" aria-hidden="true">${service.short}</div>
-            <div><h3 class="service-name">${service.label}</h3><p class="status-text">${value.active ? "Aktif" : "Nonaktif"}</p></div>
+            <div class="service-icon" aria-hidden="true">${service.icon}</div>
+            <div><h4 class="service-name">${service.label}</h4><p class="status-text">${value.active ? "Aktif" : "Nonaktif"}</p></div>
           </div>`;
 
         const switchLabel = document.createElement("label");
@@ -739,10 +819,37 @@
         toggle.addEventListener("change", () => {
           card.classList.toggle("inactive", !toggle.checked);
           card.querySelector(".status-text").textContent = toggle.checked ? "Aktif" : "Nonaktif";
+          syncOrderUI();
         });
+        nameInput.addEventListener("input", syncOrderUI);
 
         card.append(head, nameField, modeField, directFields, drawerPanel);
-        contactsGrid.appendChild(card);
+        return card;
+    }
+
+    function renderContacts(contacts, order, drawers) {
+      contactsGrid.textContent = "";
+      const orderedKeys = normalizeOrder(order);
+      for (const group of groups) {
+        const section = document.createElement("section");
+        section.className = "group-section";
+        section.dataset.group = group.id;
+        section.innerHTML = `<div class="group-head"><h3 class="group-title">${group.title}</h3><p class="group-desc">${group.desc}</p></div>`;
+        if (group.orderable) {
+          const preview = document.createElement("div");
+          preview.className = "order-preview";
+          preview.dataset.role = "order-preview";
+          preview.setAttribute("aria-label", `Urutan tampil ${group.title}`);
+          section.appendChild(preview);
+        }
+        const grid = document.createElement("div");
+        grid.className = "grid";
+        const keys = group.orderable
+          ? orderedKeys.filter((key) => serviceByKey(key).group === group.id)
+          : services.filter((service) => service.group === group.id).map((service) => service.key);
+        for (const key of keys) grid.appendChild(buildCard(serviceByKey(key), contacts, drawers));
+        section.appendChild(grid);
+        contactsGrid.appendChild(section);
       }
       syncOrderUI();
     }
