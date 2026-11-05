@@ -1,3 +1,5 @@
+import { ALLOWED_HOSTS } from "../_shared/hosts.js";
+
 const CHANNELS = [
   "whatsapp",
   "telegram",
@@ -23,38 +25,17 @@ const DEFAULT_DISPLAY_ORDER = [
 ];
 const DISPLAY_ORDER_KEY = "display:order";
 const DEFAULT_LABELS = {
-  whatsapp: "WhatsApp Official",
-  telegram: "Telegram Official",
-  telegram_channel: "Channel Telegram Official",
-  livechat: "LiveChat Official",
-  whatsapp_group: "Grup WhatsApp Official",
-  telegram_group: "Grup Telegram Official",
-  facebook_group: "Grup Facebook Official",
+  whatsapp: "WhatsApp",
+  telegram: "Telegram",
+  telegram_channel: "Channel Telegram",
+  livechat: "LiveChat",
+  whatsapp_group: "Grup WhatsApp",
+  telegram_group: "Grup Telegram",
+  facebook_group: "Grup Facebook",
   alternative: "LINK ALTERNATIF",
   apk_download: "DOWNLOAD APK M188",
 };
 const MAX_LABEL_CHARS = 60;
-
-const ALLOWED_HOSTS = {
-  whatsapp: new Set(["api.whatsapp.com", "wa.me", "pasticuan.me", "www.pasticuan.me"]),
-  telegram: new Set(["t.me", "telegram.me", "pasticuan.me", "www.pasticuan.me"]),
-  telegram_channel: new Set(["t.me", "telegram.me", "pasticuan.me", "www.pasticuan.me"]),
-  livechat: new Set(["direct.lc.chat", "pasticuan.me", "www.pasticuan.me"]),
-  whatsapp_group: new Set(["chat.whatsapp.com", "pasticuan.me", "www.pasticuan.me"]),
-  telegram_group: new Set(["t.me", "telegram.me", "pasticuan.me", "www.pasticuan.me"]),
-  facebook_group: new Set(["facebook.com", "www.facebook.com", "pasticuan.me", "www.pasticuan.me"]),
-  apk_download: new Set(["shrtl.sbs", "www.shrtl.sbs", "pasticuan.me", "www.pasticuan.me", "livemagnum188.chat", "www.livemagnum188.chat"]),
-  alternative: new Set([
-    "pasticuan.me",
-    "www.pasticuan.me",
-    "shrtl.sbs",
-    "www.shrtl.sbs",
-    "livemagnum188.chat",
-    "www.livemagnum188.chat",
-    "heylink.me",
-    "www.heylink.me",
-  ]),
-};
 
 const COOKIE_NAME = "__Host-magnum_admin_session";
 const SESSION_SECONDS = 2 * 60 * 60;
@@ -505,6 +486,11 @@ async function handleSave(context) {
   writes.push(context.env.CONTACTS.put("admin:updated_at", updatedAt));
   writes.push(context.env.CONTACTS.put(DISPLAY_ORDER_KEY, JSON.stringify(displayOrder)));
   await Promise.all(writes);
+  // Hapus cache /api/contacts di data center ini agar admin langsung melihat hasilnya.
+  // Cache API tidak tersedia di balik Cloudflare Access; data tetap tersimpan, jadi abaikan.
+  try {
+    await caches.default.delete(new Request(new URL("/api/contacts", context.request.url).toString()));
+  } catch {}
 
   return json({ ok: true, updatedAt });
 }

@@ -39,6 +39,8 @@ repository/
     ├── admin/
     │   └── index.html
     └── functions/
+        ├── _shared/
+        │   └── hosts.js
         ├── api/
         │   ├── admin.js
         │   ├── contacts.js
@@ -149,9 +151,9 @@ pengguna ke link eksternal melalui `/go/apk_download`; file APK **tidak**
 disimpan di repo atau disediakan oleh Cloudflare Pages. Keberhasilan unduhan
 bergantung pada tujuan akhir link eksternal.
 
-Domain URL baru harus ada di allowlist `apk_download` yang dijaga pada
-`functions/api/admin.js` serta dua file `functions/go/` (untuk link langsung
-dan laci). Saat ini: `shrtl.sbs`, `pasticuan.me`, `livemagnum188.chat`
+Domain URL baru harus ada di allowlist `apk_download` pada
+`functions/_shared/hosts.js`. File ini satu-satunya daftar domain dan dipakai
+oleh panel admin serta kedua redirect `functions/go/`. Saat ini: `shrtl.sbs`, `pasticuan.me`, `livemagnum188.chat`
 (termasuk `www`). Mengubah allowlist memerlukan commit kode, bukan hanya
 perubahan di panel.
 

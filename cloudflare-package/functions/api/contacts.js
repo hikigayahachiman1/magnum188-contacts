@@ -22,13 +22,13 @@ const DEFAULT_DISPLAY_ORDER = [
   "facebook_group",
 ];
 const DEFAULT_LABELS = {
-  whatsapp: "WhatsApp Official",
-  telegram: "Telegram Official",
-  telegram_channel: "Channel Telegram Official",
-  livechat: "LiveChat Official",
-  whatsapp_group: "Grup WhatsApp Official",
-  telegram_group: "Grup Telegram Official",
-  facebook_group: "Grup Facebook Official",
+  whatsapp: "WhatsApp",
+  telegram: "Telegram",
+  telegram_channel: "Channel Telegram",
+  livechat: "LiveChat",
+  whatsapp_group: "Grup WhatsApp",
+  telegram_group: "Grup Telegram",
+  facebook_group: "Grup Facebook",
   alternative: "LINK ALTERNATIF",
   apk_download: "DOWNLOAD APK M188",
 };
@@ -88,6 +88,14 @@ export async function onRequestGet(context) {
     );
   }
 
+  // shortcut: cache per data center 30 detik (37 pembacaan KV -> 1 per 30 detik);
+  // perubahan admin butuh sampai 30 detik untuk tampil di lokasi lain. Simpan semua
+  // konfigurasi dalam satu key KV jika pengunjung terus bertambah.
+  const cacheKey = new Request(new URL("/api/contacts", context.request.url).toString());
+  let cached = null;
+  try { cached = await caches.default.match(cacheKey); } catch {} // tanpa cache tetap jalan
+  if (cached) return new Response(cached.body, { status: 200, headers: jsonHeaders });
+
   const [values, statuses, labels, drawerValues, storedOrder] = await Promise.all([
     Promise.all(CHANNELS.map((channel) => context.env.CONTACTS.get(channel))),
     Promise.all(
@@ -126,8 +134,13 @@ export async function onRequestGet(context) {
   });
   contacts.drawers = drawers;
 
-  return new Response(JSON.stringify(contacts), {
-    status: 200,
-    headers: jsonHeaders,
-  });
+  const body = JSON.stringify(contacts);
+  try {
+    context.waitUntil(caches.default.put(
+      cacheKey,
+      new Response(body, { headers: { ...jsonHeaders, "Cache-Control": "public, max-age=30" } }),
+    ).catch(() => {}));
+  } catch {}
+  // Browser tetap no-store; hanya cache edge Cloudflare yang menyimpan 30 detik.
+  return new Response(body, { status: 200, headers: jsonHeaders });
 }
